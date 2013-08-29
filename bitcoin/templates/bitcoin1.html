@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html class="dark">
+	<head>
+		<meta charset=utf-8 />
+		<meta name=description content="Live 796 Futures market charts." />
+		<meta name=keywords content="Bitcoin Live 796 Futures Market Charts Realtime" />
+		{% load staticfiles %}
+		<title>796 Futures- BitcoinWisdom</title>
+		<link href="../static/css/app.css" rel=stylesheet type=text/css />
+		<link href="{% static 'css/font-awesome.min.css' %}" rel=stylesheet type=text/css />
+	</head>
+	<body>
+<div id="header_outer"><div id="header">
+
+	<div class="navbar navbar-static-top"><div class="navbar-inner"><div class="container"><ul class="nav">
+
+<li class="logo"><b>MarketA Dashboard</b> <li class="period">当前价：110</li><li class="period">最高价：120</li><li class="period">最低价：100</li><li class="period">成交量：11000</li>
+</ul></div></div></div>
+
+	<div id="control"><div class="inner"><ul id="periods" class="horiz"><li style='line-height:26px'>Time Period:</li><li class="period"><a>1w</a></li><li class="subsep"></li><li class="period"><a>1d</a></li><li class="subsep"></li><li class="period"><a>6h</a></li><li class="period"><a>1h</a></li><li class="subsep"></li><li class="period"><a>15m</a></li><li class="period"><a>1m</a></li>
+	<li>
+	<div class="dropdown">
+	<div class="t">
+		SETTINGS<span class="caret"><i class="icon-caret-down"></i><i class="icon-caret-up"></i></span>
+	</div>
+
+	<div class="dropdown-data"><table class="nowrap simple settings">
+		<tr>
+			<td>Main Indicator</td>
+			<td><ul id="setting_main_lines"><li value=mas>MA</li><li value=none>None</li></ul></td>
+		</tr>
+		<tr>
+			<td>Chart Style</td>
+			<td><ul id="setting_stick_style"><li value=candle_stick>CandleStick</li><li value=ohlc>OHLC</li><li value=line>Line</li><li value=none>None</li></ul></td>
+		</tr>
+		<tr>
+			<td>Indicator</td>
+			<td><ul id="setting_indicator"><li value=macd>MACD</li><li value=kdj>KDJ</li><li value=none>None</li></ul></td>
+		</tr>
+		<tr>
+			<td>Theme</td>
+			<td><ul id="setting_theme"><li value=dark>Dark</li><li value=light>Light</li></ul></td>
+		</tr>
+	</table></div>
+</div></li>
+	<li><a id="btn_settings">PARAMETERS</a></li>
+	<li><a id="btn_settings">Price Alerts</a></li>
+
+</ul></div></div>
+</div></div>
+
+
+<div id="loading"><div class="inner">Loading...</div></div>
+<div id="notify" class="notify"><div class="inner"></div></div>
+<div id="main">
+	<div id="sidebar_outer" style="width:550px;">
+
+		<div id="sidebar">
+			<div id="before_trades">
+				<div id="market" style="width:550px;">最新交易信息</div>
+				<div id="asks" class="ask" ><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div></div><div id="gasks" class="ask" ><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div></div><div id="price">
+					卖盘
+				</div>
+				<div id="bids" class="bid"><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div></div>
+<div id="gbids" class="bid"><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div><div>
+	&nbsp;
+</div></div>
+<div id="price">
+					买盘
+				</div>
+			</div>
+
+			<div id="trades"><table>
+				<tbody id="trades_unsorted">
+				</tbody>
+				<tbody id="trades_sorted">
+				</tbody>
+			</table></div>
+
+		</div>
+	</div>
+
+	<div id="wrapper"><canvas id="canvas_main"></canvas><canvas id="canvas_cross" class="ab"></canvas></div>
+	
+</div>
+
+<div id="footer_outer">
+<div id="footer">
+<ul class="horiz donate"><li class="sep"></li><li>
+	Updated
+	<span id="change"></span>
+	seconds ago
+</li><li class="sep"></li><li class="sep"></li><li id="now"></li>
+</ul>
+</div>
+</div>
+
+<div id="assist" style='display:none'></div>
+
+<div id="settings">
+	<h2>Parameters</h2>
+	<h3>Technical Indicators</h3>
+	<table>
+		<tr id="indicator_price_mas">
+			<th>
+MA
+				<abbr title="Up to 4 different indicators
+Set field blank to remove one of the indicators.">?</abbr>
+			</th>
+			<td>
+				<input name=price_mas />
+				<input name=price_mas />
+				<input name=price_mas />
+				<input name=price_mas />
+			</td>
+			<td><button>default</button></td>
+		</tr>
+		<tr id="indicator_macd">
+			<th>
+MACD
+				<abbr title="Short, Long, Move">?</abbr>
+			</th>
+			<td>
+				<input name=macd />
+				<input name=macd />
+				<input name=macd />
+			</td>
+			<td><button>default</button></td>
+		</tr>
+		<tr id="indicator_kdj">
+			<th>
+KDJ
+				<abbr title="rsv, k, d">?</abbr>
+			</th>
+			<td>
+				<input name=kdj />
+				<input name=kdj />
+				<input name=kdj />
+			</td>
+			<td><button>default</button></td>
+		</tr>
+	</table>
+	<h3>Price Alert</h3>
+	<table>
+		<tr id="indicator_price_mas">
+			<th>
+MA
+				<abbr title="Up to 4 different indicators
+Set field blank to remove one of the indicators.">?</abbr>
+			</th>
+			<td>
+				<input name=price_mas />				
+			</td>
+			<td><button>default</button></td>
+		</tr>
+		<tr id="indicator_macd">
+			<th>
+MACD
+				<abbr title="Short, Long, Move">?</abbr>
+			</th>
+			<td>
+				<input name=macd />
+			</td>
+			<td><button>default</button></td>
+		</tr>
+		<tr id="indicator_kdj">
+			<th>
+KDJ
+				<abbr title="rsv, k, d">?</abbr>
+			</th>
+			<td>
+				<input name=kdj />
+			</td>
+			<td><button>default</button></td>
+		</tr>
+	</table>
+
+	<div id="close_settings"><a>[ CLOSE ]</a></div>
+</div>
+
+
+<script type=text/javascript>
+	(function() {
+	  window.$sid = "c4482d1c";
+
+	  window.$time_fix = 1377660267 * 1000 - Date.now();
+
+	  window.$host = "bitcoinwisdom.com";
+
+	  window.$test = false;
+
+	  window.$symbol = "f796btcusd";
+
+	  window.$theme_name = "dark";
+
+	  window.$debug = false;
+
+	  window.$settings = {"main_lines":{"id":"main_lines","name":"Main Indicator","options":{"EMA":"emas","MA":"mas","None":"none"}},"stick_style":{"id":"stick_style","name":"Chart Style","options":{"CandleStickHLC":"candle_stick_hlc","CandleStick":"candle_stick","OHLC":"ohlc","Line":"line","Line-o":"line_o","None":"none"}},"indicator":{"id":"indicator","name":"Indicator","options":{"MACD":"macd","KDJ":"kdj","StochRSI":"stoch_rsi","None":"none"}},"scale":{"id":"scale","name":"Scale","options":{"Normal":"normal","Logarithmic":"logarithmic"}},"theme":{"id":"theme","name":"Theme","options":{"Dark":"dark","Light":"light"},"refresh":true}};
+
+	}).call(this);
+</script>
+
+<script src=../static/js/main.js type=text/javascript></script>
+<script type=text/javascript>
+	(function() {
+	  var _this = this;
+
+	  $(function() {
+	    return $('.gg').html('<img src="/img/796-2.gif" width=320 />');
+	  });
+
+	}).call(this);
+</script>		<script type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-40487283-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>
+	</body>
+</html>

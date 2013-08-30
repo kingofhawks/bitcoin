@@ -1,1 +1,123 @@
-requests
+http://bitcoinwisdom.com/markets/mtgox/btcusd
+http://markets.thegenesisblock.com/
+http://bitcoin.clarkmoody.com/
+http://ss.btc123.com/
+
+可以参照下上面的网址，不能抄袭上面的。我大概就是弄这么一个看行情的网站。数据以推送的方式的！-->推送？
+
+我有多个市场的行情的需要展示，上面的地址只是单单一个市场的展示。
+
+要求做个手机的看行情页面！-->mobile? 5天 candlestick+volume+MA+时间段可设置
+
+页面的需求要求比较完善。
+
+带上会员注册，登陆系统。-->3 days
+
+
+1.全站SEO优化，按照搜索引擎标准写代码。-->SEO?
+2.做一个标准比较好看的首页。展示的样子大概就是http://price.btcfans.com/  -->1 day
+3.需要全站伪静态，或者静态页面。 每一个市场能独立绑定一个域名，当前没一个市场也可以由主域名直接访问。比如主域名：qq.com。我要访问mtgox的市场的行情 qq.com/mtgox --?伪静态?
+4.数据表字段。
+用户表：username，password，mail，QQ，baojing，baojingdown，qqbaojing，qqbaojingdown
+
+ticker表(实时数据)：比如地址是：https://796.com/apiV2/ticker.html?op=futures 
+获取存储：last，high，low，vol，buy，sell,name,coin,content  后3个为自定义内容，name可以为796，coin一般分为3大种（美元，btc，ltc，），content(一般定义为:此数据来自XX.com)
+这个表请用update sql语句，不需要用到insert语句
+此表我已经做好了。不过写入数据库是用的php
+
+
+
+depth表：需要3个字段Price，Volume，type
+这个表不知道怎么写比较好或者说不用表，直接用文件形式缓存。此数据不需要作为历史参考，而且数据时刻在变动，一般是10秒更新一次。
+
+
+trade表：time，price，amount，type
+这个必须要写入数据库，因为K线需要用到这个历史trade表数据。
+
+
+
+5.需要在页面设置报警，打开关闭K线。显示数据行，刷新数据时间，如果没有登录采用cookies缓存记录用户的这些行为，如果登录了就写入数据库，以便下次使用。-->报警形式?1 day
+
+
+6.用户找回密码才用邮箱找回。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+数据采集地址：2 days API+数据库 1 day
+796futures
+depth表：https://796.com/apiV2/depth/100.html?op=futures
+trade表：https://796.com/apiV2/trade/100.html?op=futures
+
+796stockpd
+depth表：https://796.com/apiV2/depth/100.html?op=xchange
+trade表：https://796.com/apiV2/trade/100.html?op=xchange
+
+796asicminer
+depth表：https://796.com/apiV2/depth/100.html?op=asicminer
+trade表：https://796.com/apiV2/trade/100.html?op=asicminer
+
+
+MTgox
+depth表：http://data.mtgox.com/code/data/getDepth.php?Currency=USD
+trade表：http://data.mtgox.com/api/0/data/getTrades.php?Currency=USD
+
+BTC-E btc
+depth表：https://btc-e.com/api/2/btc_usd/depth
+trade表：https://btc-e.com/api/2/btc_usd/trades
+
+BTC-E ltc
+depth表：https://btc-e.com/api/2/ltc_usd/depth
+trade表：https://btc-e.com/api/2/ltc_usd/trades 
+
+btcchina
+depth表：https://btcchina.com/bc/order_book
+trade表：https://btcchina.com/bc/trades
+
+bitstamp
+depth表：https://www.bitstamp.net/api/order_book/
+trade表：https://www.bitstamp.net/api/transactions/
+
+fxbtc  LTC
+depth表：https://data.fxbtc.com/api?op=query_depth&symbol=ltc_cny
+trade表：https://data.fxbtc.com/api?op=query_last_trades&symbol=ltc_cny&count=100
+
+bter 
+depth表：https://bter.com/api/1/depth/btc_cny
+trade表：https://bter.com/api/1/trade/btc_cny/
+
+btctrade
+depth表：http://www.btctrade.com/api/depth
+trade表：http://www.btctrade.com/btc_trades
+
+goxbtb
+depth表：https://goxbtc.com/api/new/btc_cny/depth.htm
+trade表：https://goxbtc.com/api/new/btc_cny/trade.htm
+
+okcoin
+depth表：https://www.okcoin.com/api/depth.do
+trade表：https://www.okcoin.com/api/trades.do
+
+
+
+
+
+
+另外单独写一个api接口页面，如果用户get数据。--?1 天
+http://api.qq.com/?qq=12354&sc=mtgox&qqbaojing=100
+则把这个数据写入数据库，这个单独弄表吧
+
+
+

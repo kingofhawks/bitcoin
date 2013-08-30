@@ -15,3 +15,6 @@ from django.db import connection
 def test(request):
     return render_to_response('bitcoin1.html', locals())
 
+def market(request):
+    return render_to_response('market.html', locals())
+

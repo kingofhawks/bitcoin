@@ -18,3 +18,6 @@ def test(request):
 def market(request):
     return render_to_response('market.html', locals())
 
+def bitcoin(request):
+    return render_to_response('bitcoin.html', locals())
+

@@ -1,26 +1,14 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
-<head>
-  <meta charset="utf-8">
-  {% load staticfiles %}
-  <title>Market Dashboard</title>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		{% load staticfiles %}
+		<title>Bitcoin Example</title>
 
-  <link rel="stylesheet" href="../static/css/examples.css" />
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-  <script type="text/javascript" src="../static/js/masonry.pkgd.min.js"></script>
-  
-<script type="text/javascript">
-docReady( function() {
-	  var container = document.querySelector('#basic');
-	  var msnry = new Masonry( container, {
-		  columnWidth: 10,
-		  itemSelector: '.item'
-	  });
-	});
-	
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript">
 $(function() {
 	var jsonUrl = "{% static data.json%}"
-
 	$.getJSON(jsonUrl+'data.json', function(data) {
 
 		// split the data set into ohlc and volume
@@ -65,7 +53,7 @@ $(function() {
 		]];
 
 		// create the chart
-		$('#chart').highcharts('StockChart', {
+		$('#container').highcharts('StockChart', {
 			navigator: {
 				enabled: false
 			},
@@ -148,23 +136,13 @@ $(function() {
 		});
 	});
 });
-</script>
-</head>
-<body>
-  <div id="basic" class="container">
-  	<div class="item w4 h2">
-  		<h2>Market Dashboard</h2>当前价：110&nbsp;&nbsp;&nbsp;&nbsp;最高价：120  最低价：120  成交量：120		
-  	</div>
-  	<div class="item w4 h3">Time Period</div>
-    <div id="chart" class="item w5 h6">Chart</div>
-    <div class="item w6 h7">Summary</div>
-	<div class="item w6 h7">卖单</div>
-	<div class="item w6 h7">买单</div>
-  </div>
-
-
-
+		</script>
+	</head>
+	<body>
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
-</body>
+
+<div id="container" style="height: 500px; min-width: 500px"></div>
+
+	</body>
 </html>

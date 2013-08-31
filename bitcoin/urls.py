@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     # url(r'^bitcoin/', include('bitcoin.foo.urls')),
     url(r'^test/$', views.test),
     url(r'^market/$', views.market),
+    url(r'^bitcoin/$', views.bitcoin),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

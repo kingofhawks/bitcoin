@@ -8,6 +8,7 @@ http://ss.btc123.com/
 我有多个市场的行情的需要展示，上面的地址只是单单一个市场的展示。
 
 要求做个手机的看行情页面！-->mobile? 5天 candlestick+volume+MA+时间段可设置
+右边从上到下显示：1.价格summary(current,open,high,low,volume..)2.卖单；3。买单。4.已成交记录
 
 页面的需求要求比较完善。
 

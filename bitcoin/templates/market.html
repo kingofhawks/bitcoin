@@ -4,16 +4,20 @@
   <meta charset="utf-8">
   {% load staticfiles %}
   <title>Market Dashboard</title>
-
-  <link rel="stylesheet" href="../static/css/examples.css" />
+  <link rel="stylesheet" href="../static/css/bitcoin.css" />
+  <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../static/bootstrap/css/bootstrap-theme.css" />
+  
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script type="text/javascript" src="../static/js/masonry.pkgd.min.js"></script>
+  <script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+
   
 <script type="text/javascript">
 docReady( function() {
 	  var container = document.querySelector('#basic');
 	  var msnry = new Masonry( container, {
-		  columnWidth: 10,
+		  columnWidth: 5,
 		  itemSelector: '.item'
 	  });
 	});
@@ -57,7 +61,7 @@ $(function() {
 
 		// set the allowed units for data grouping
 		var groupingUnits = [[
-			'week',                         // unit name
+			'day',                         // unit name:day,week
 			[1]                             // allowed multiples
 		], [
 			'month',
@@ -147,24 +151,110 @@ $(function() {
 		    }]
 		});
 	});
+	
+	$('.dropdown-toggle').dropdown();
+	$('.dropdown input, .dropdown label').click(function(e) {
+	    e.stopPropagation();
+	  });
+	
+	//show/hide MA indicator
+	$('#showMa').click(function(){
+		var chart = $('#chart').highcharts(),
+        	series = chart.series[2];
+		if (series.visible) {			
+		} else {
+			series.show();
+		}		
+	})
+	
+	$('#hideMa').click(function(){
+		var chart = $('#chart').highcharts(),
+        	series = chart.series[2];
+		if (series.visible) {
+			series.hide();
+		}		
+	})
+	
+	//var audio = $('#audio');
+	//audio.get(0).play();
+	//audio.trigger('play');
+	//http://www.uscis.gov/files/nativedocuments/Track%2093.mp3
+	//../static/Kalimba.mp3
+    var audioElement = document.createElement('audio');
+    audioElement.setAttribute('src', 'http://www.uscis.gov/files/nativedocuments/Track%2093.mp3');
+    //audioElement.setAttribute('autoplay', 'autoplay'); must enable autoplay
+    //audioElement.load()
+    $.get();
+    audioElement.addEventListener("load", function() {
+    audioElement.play();
+    }, true);
+
+
+
+
+    $('.play').click(function() {
+    audioElement.play();
+    });
+
+
+    $('.pause').click(function() {
+    audioElement.pause();
+    });
 });
 </script>
 </head>
 <body>
-  <div id="basic" class="container">
+  <div id="basic" class="container2">
   	<div class="item w4 h2">
-  		<h2>Market Dashboard</h2>当前价：110&nbsp;&nbsp;&nbsp;&nbsp;最高价：120  最低价：120  成交量：120		
+  		最新价：110&nbsp;&nbsp;&nbsp;&nbsp;最高价：120  最低价：120  成交量：120		
   	</div>
-  	<div class="item w4 h3">Time Period</div>
+  	<div class="item w4 h3">  	
+	  	<ul class="nav nav-pills">
+	  	  <p class="navbar-text">Time Period:</p>
+		  <li><a href="#">1w</a></li>
+		  <li><a href="#">1d</a></li>
+		  <li><a href="#">6h</a></li>
+		  <li><a href="#">15m</a></li>
+		  <li><a href="#">1m</a></li>
+		  <li class="dropdown">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Settings <strong class="caret"></strong></a>
+            <div class="dropdown-menu w6" style="padding: 15px; padding-bottom: 0px;">
+              <!-- Login form here -->
+              Main Indicator:
+              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">MA</button>
+              <button id="hideMa" type="button" class="btn btn-primary" data-toggle="button">None</button>
+              Technical Indicator:
+              <button type="button" class="btn btn-primary" data-toggle="button">MACD</button>
+              <button type="button" class="btn btn-primary" data-toggle="button">KDJ</button>
+              <button type="button" class="btn btn-primary" data-toggle="button">None</button>
+			  <form name="settingForm" method="get">
+				  <input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="80"/>
+				  <input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
+				  <input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
+				  <label class="string optional" for="user_remember_me"> Remember me</label>
+				  <button id="disable2">Disable MA</button>				  
+			  </form>
+            </div>
+          </li>
+		  <li><a href="#">Parameters</a></li>
+		  <li><a href="#">Alerts</a></li>
+		  
+		</ul>
+  	</div>
     <div id="chart" class="item w5 h6">Chart</div>
-    <div class="item w6 h7">Summary</div>
-	<div class="item w6 h7">卖单</div>
-	<div class="item w6 h7">买单</div>
-  </div>
-
-
-
+    <div class="item w2 h7">卖单</div>
+	<div class="item w2 h7">买单</div>
+    <div class="item w6 h7">最新成交记录</div> 
+    <div class="item">
+        <audio id="audio" controls>
+        	<source src="../static/Kalimba.mp3" type="audio/mpeg"></source>
+			Your browser does not support the audio element.
+		</audio>
+    </div>
+   	
+</div>
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+
 </body>
 </html>

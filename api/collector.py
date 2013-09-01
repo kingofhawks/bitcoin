@@ -40,5 +40,10 @@ asks = orders[1]
 print bids
 print asks
 
-print get_trades('https://796.com/apiV2/trade/100.html',params)
+trades = get_trades('https://796.com/apiV2/trade/100.html',params)
+print trades
+print len(trades)
+import datetime
+print datetime.datetime.fromtimestamp(trades[0].get('time')).strftime('%Y-%m-%d %H:%M:%S')
+print datetime.datetime.fromtimestamp(trades[len(trades)-1].get('time')).strftime('%Y-%m-%d %H:%M:%S')
 print get_ticker('https://796.com/apiV2/ticker.html',params)

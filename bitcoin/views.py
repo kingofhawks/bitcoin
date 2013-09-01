@@ -21,3 +21,6 @@ def market(request):
 def bitcoin(request):
     return render_to_response('bitcoin.html', locals())
 
+def dropdown(request):
+    return render_to_response('dropdown.html', locals())
+

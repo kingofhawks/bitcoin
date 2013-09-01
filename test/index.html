@@ -1,0 +1,16 @@
+<!DOCTYPE html>  
+<meta charset="utf-8" />  
+<title>WebSocket Test</title>  
+<script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="http://localhost/socket.io/socket.io.js"></script>
+<script language="javascript" type="text/javascript">  
+  var socket = io.connect('http://localhost');
+  socket.on('news', function (data) {
+    console.log(data);
+	$('#output').html(data.hello);
+    socket.emit('my other event', { my: 'data' });
+	  }); 
+	</script>  
+	<h2>WebSocket Test</h2> 
+	<div id="output"></div>  
+</html>

@@ -4,6 +4,12 @@ var app = require('http').createServer(handler)
 
 app.listen(80);
 
+var redis = require('socket.io/node_modules/redis');
+var sub = redis.createClient(6379,'192.168.192.128');
+
+//Subscribe to the Redis chat channel
+sub.subscribe('chat');
+
 function handler (req, res) {
   fs.readFile(__dirname + '/index.html',
   function (err, data) {

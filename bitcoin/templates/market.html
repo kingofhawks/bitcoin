@@ -8,10 +8,11 @@
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap-theme.css" />
   
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>  
+  <script src="http://localhost/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="../static/js/masonry.pkgd.min.js"></script>
   <script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
-
+  
   
 <script type="text/javascript">
 docReady( function() {
@@ -200,12 +201,27 @@ $(function() {
     $('.pause').click(function() {
     audioElement.pause();
     });
+    
+    var socket = io.connect('http://localhost:80');
+    socket.on('news', function (data) {
+      console.log(data);
+      //replace ' with "
+      var b = data.replace(/'/g, '"');
+      console.log(b);
+      jQuery.parseJSON('{"name":"John"}');
+      var obj = JSON.parse(b);
+      console.log(obj.hello);
+      
+  	  $('#summary').html(obj.hello);
+      //socket.emit('my other event', { my: 'data' });
+  	  }); 
+    //$('#summary').html('test')
 });
 </script>
 </head>
 <body>
   <div id="basic" class="container2">
-  	<div class="item w4 h2">
+  	<div id="summary" class="item w4 h2">
   		最新价：110&nbsp;&nbsp;&nbsp;&nbsp;最高价：120  最低价：120  成交量：120		
   	</div>
   	<div class="item w4 h3">  	

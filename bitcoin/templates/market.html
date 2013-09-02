@@ -214,27 +214,31 @@ $(function() {
 	      //var b = data.replace(/'/g, '"');
 	      //console.log(b);
 	      //jQuery.parseJSON('{"name":"John"}');
-	      var obj = JSON.parse(data);
-	      console.log(obj);
-	      console.log(obj.sell);
-	      var source   = $("#summary").html();
+	      var livePrice = JSON.parse(data);
+	      console.log(livePrice);
+	      //console.log(obj.sell);
+	      var source   = $("#live_price").html();
+	      console.log(source);
 	      var template = Handlebars.compile(source);
 	      //var context = {current: "11111"}
-	      var html    = template(obj);
+	      var html    = template(livePrice);
 	      console.log(html);
 	  	  $('#summary').html(html);
     }      
-      
       //socket.emit('my other event', { my: 'data' });
   	  });     
 });
+</script>
+<script id="live_price" type="text/x-handlebars-template">
+{% verbatim %}
+  最新价：{{last}}&nbsp;&nbsp;&nbsp;&nbsp;最高价：{{high}} 最低价：{{low}}  成交量：{{vol}}
+{% endverbatim %}
 </script>
 </head>
 <body>
   <div id="basic" class="container2">
   {% verbatim %}
-  	<div id="summary" class="item w4 h2">
-  		最新价：{{last}}&nbsp;&nbsp;&nbsp;&nbsp;最高价：{{high}} 最低价：{{low}}  成交量：{{vol}}		
+  	<div id="summary" class="item w4 h2">  				
   	</div>
   	{% endverbatim %}
   	<div class="item w4 h3">  	
@@ -271,16 +275,59 @@ $(function() {
 		</ul>
   	</div>
     <div id="chart" class="item w5 h6">Chart</div>
-    <div class="item w2 h7">卖单</div>
-	<div class="item w2 h7">买单</div>
-    <div class="item w6 h7">最新成交记录</div> 
-    <div class="item">
-        <audio id="audio" controls>
+    <div class="item w2 h7">卖单
+    <table id="asks" class="table">
+	  <tr>
+		  <td class="active">a</td>
+		  <td class="success">b...</td>
+		  <td class="warning">...</td>
+		  <td class="danger">...</td>
+	  </tr>
+	  <tr>
+		  <td class="active">...</td>
+		  <td class="success">...</td>
+		  <td class="warning">...</td>
+		  <td class="danger">...</td>
+	  </tr>
+	</table>
+    </div>
+	<div class="item w2 h7">买单
+		<table id="bids" class="table">
+		  <tr>
+			  <td class="active">a</td>
+			  <td class="success">b...</td>
+			  <td class="warning">...</td>
+			  <td class="danger">...</td>
+		  </tr>
+		  <tr>
+			  <td class="active">...</td>
+			  <td class="success">...</td>
+			  <td class="warning">...</td>
+			  <td class="danger">...</td>
+		  </tr>
+		</table>
+	</div>
+    <div class="item w6 h7">最新成交记录
+    	<table id="trades" class="table">
+		  <tr>
+			  <td class="active">a</td>
+			  <td class="success">b...</td>
+			  <td class="warning">...</td>
+			  <td class="danger">...</td>
+		  </tr>
+		  <tr>
+			  <td class="active">...</td>
+			  <td class="success">...</td>
+			  <td class="warning">...</td>
+			  <td class="danger">...</td>
+		  </tr>
+		</table>
+    </div> 
+
+   	<audio id="audio" >
         	<source src="../static/Kalimba.mp3" type="audio/mpeg"></source>
 			Your browser does not support the audio element.
 		</audio>
-    </div>
-   	
 </div>
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>

@@ -19,7 +19,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.dummy', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'G:\\Workspace\\bitcoin\\sqlite.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
@@ -127,6 +127,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
+    'api'
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -160,4 +162,21 @@ LOGGING = {
             'propagate': True,
         },
     }
+}
+
+import djcelery
+djcelery.setup_loader()
+#Redis broker
+BROKER_URL = 'redis://192.168.192.128:6379/0'
+#CELERY_IMPORTS = ('dt.tasks', )
+
+from celery.schedules import crontab
+
+CELERYBEAT_SCHEDULE = {
+    # Update haystack search engine index
+    'polling-market-data': {
+        'task': 'api.tasks.polling_market_data',
+        'schedule': crontab(minute='*/1'),
+        'args': (),
+    },
 }

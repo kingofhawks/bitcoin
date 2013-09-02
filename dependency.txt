@@ -2,3 +2,4 @@ django>=1.5
 requests
 redis
 simplejson
+django-celery

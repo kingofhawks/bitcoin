@@ -206,11 +206,12 @@ $(function() {
     
     var socket = io.connect('http://localhost:80');
     socket.on('news', function (data) {
+      console.log("new received*****************");
       console.log(data);
-      console.log(_.isObject(data));
-      //console.log(typeof data.replace === 'function');
-      //replace ' with "
+      //console.log(_.isObject(data));
+      
       if (!_.isObject(data) && typeof data.replace === 'function'){
+    	  //replace ' with "          
 	      //var b = data.replace(/'/g, '"');
 	      //console.log(b);
 	      //jQuery.parseJSON('{"name":"John"}');
@@ -218,7 +219,7 @@ $(function() {
 	      console.log(livePrice);
 	      //console.log(obj.sell);
 	      var source   = $("#live_price").html();
-	      console.log(source);
+	      //console.log(source);
 	      var template = Handlebars.compile(source);
 	      //var context = {current: "11111"}
 	      var html    = template(livePrice);
@@ -226,12 +227,144 @@ $(function() {
 	  	  $('#summary').html(html);
     }      
       //socket.emit('my other event', { my: 'data' });
-  	  });     
+  	  }); 
+    
+    socket.on('trades', function (data) {
+    	console.log("trades received*****************");
+        //console.log(data);
+        //console.log(_.isObject(data));
+        
+        if (!_.isObject(data) && typeof data.replace === 'function'){
+      	  //replace ' with "          
+  	      //var b = data.replace(/'/g, '"');
+  	      //console.log(b);
+  	      //jQuery.parseJSON('{"name":"John"}');
+  	      var liveTrades = JSON.parse(data);
+  	      console.log(liveTrades);
+  	      //console.log(obj.sell);
+  	      var source   = $("#live_trades").html();
+  	      //console.log(source);
+  	      var template = Handlebars.compile(source);
+  	      //var context = {current: "11111"}
+  	      var html    = template(liveTrades);
+  	      console.log(html);
+  	  	  $('#trades').html(html);
+      }             
+    }); 
+    
+    socket.on('asks', function (data) {
+    	console.log("asks received*****************");
+        //console.log(data);
+        //console.log(_.isObject(data));
+        
+        if (!_.isObject(data) && typeof data.replace === 'function'){
+      	  //replace ' with "          
+  	      //var b = data.replace(/'/g, '"');
+  	      //console.log(b);
+  	      //jQuery.parseJSON('{"name":"John"}');
+  	      var liveTrades = JSON.parse(data);
+  	      console.log(liveTrades);
+  	      //console.log(obj.sell);
+  	      var source   = $("#asksTemplate").html();
+  	      //console.log(source);
+  	      var template = Handlebars.compile(source);
+  	      //var context = {current: "11111"}
+  	      var html    = template(liveTrades);
+  	      console.log(html);
+  	  	  $('#asks').html(html);
+      }             
+    }); 
+    
+    
+    socket.on('bids', function (data) {
+    	console.log("bids received*****************");
+        //console.log(data);
+        //console.log(_.isObject(data));
+        
+        if (!_.isObject(data) && typeof data.replace === 'function'){
+      	  //replace ' with "          
+  	      //var b = data.replace(/'/g, '"');
+  	      //console.log(b);
+  	      //jQuery.parseJSON('{"name":"John"}');
+  	      var liveTrades = JSON.parse(data);
+  	      console.log(liveTrades);
+  	      //console.log(obj.sell);
+  	      var source   = $("#bidsTemplate").html();
+  	      //console.log(source);
+  	      var template = Handlebars.compile(source);
+  	      //var context = {current: "11111"}
+  	      var html    = template(liveTrades);
+  	      console.log(html);
+  	  	  $('#bids').html(html);
+      }             
+    }); 
 });
 </script>
 <script id="live_price" type="text/x-handlebars-template">
 {% verbatim %}
   最新价：{{last}}&nbsp;&nbsp;&nbsp;&nbsp;最高价：{{high}} 最低价：{{low}}  成交量：{{vol}}
+{% endverbatim %}
+</script>
+<script id="live_trades" type="text/x-handlebars-template">
+{% verbatim %}
+  <table id="trades" class="table">
+    <thead>
+      <th>时间</th>
+      <th>价格</th>
+      <th>类型</th>
+	  <th>数量</th>
+    </thead>
+    <tbody>
+      {{#each []}}
+        <tr>
+          <td>{{this.time}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.type}}</td>
+		  <td>{{this.amount}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{% endverbatim %}
+</script>
+<script id="asksTemplate" type="text/x-handlebars-template">
+{% verbatim %}
+  <table id="asks" class="table">
+    <thead>
+      <th>卖出价格</th>
+      <th>数量</th>
+      <th>累积量</th>	  
+    </thead>
+    <tbody>
+      {{#each []}}
+        <tr>
+		{{#each []}}
+          <td>{{this}}</td>
+		{{/each}}          		  
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{% endverbatim %}
+</script>
+<script id="bidsTemplate" type="text/x-handlebars-template">
+{% verbatim %}
+  <table id="bids" class="table">
+    <thead>
+      <th>买入价格</th>
+      <th>数量</th>
+      <th>累积量</th>	  
+    </thead>
+    <tbody>
+      {{#each []}}
+        <tr>
+		{{#each []}}
+          <td>{{this}}</td>
+		{{/each}}          		  
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 {% endverbatim %}
 </script>
 </head>
@@ -274,55 +407,15 @@ $(function() {
 		  
 		</ul>
   	</div>
+  	
     <div id="chart" class="item w5 h6">Chart</div>
-    <div class="item w2 h7">卖单
-    <table id="asks" class="table">
-	  <tr>
-		  <td class="active">a</td>
-		  <td class="success">b...</td>
-		  <td class="warning">...</td>
-		  <td class="danger">...</td>
-	  </tr>
-	  <tr>
-		  <td class="active">...</td>
-		  <td class="success">...</td>
-		  <td class="warning">...</td>
-		  <td class="danger">...</td>
-	  </tr>
-	</table>
-    </div>
-	<div class="item w2 h7">买单
-		<table id="bids" class="table">
-		  <tr>
-			  <td class="active">a</td>
-			  <td class="success">b...</td>
-			  <td class="warning">...</td>
-			  <td class="danger">...</td>
-		  </tr>
-		  <tr>
-			  <td class="active">...</td>
-			  <td class="success">...</td>
-			  <td class="warning">...</td>
-			  <td class="danger">...</td>
-		  </tr>
-		</table>
-	</div>
-    <div class="item w6 h7">最新成交记录
-    	<table id="trades" class="table">
-		  <tr>
-			  <td class="active">a</td>
-			  <td class="success">b...</td>
-			  <td class="warning">...</td>
-			  <td class="danger">...</td>
-		  </tr>
-		  <tr>
-			  <td class="active">...</td>
-			  <td class="success">...</td>
-			  <td class="warning">...</td>
-			  <td class="danger">...</td>
-		  </tr>
-		</table>
-    </div> 
+    
+    <div id="asks" class="item w2 h7">卖单</div>    
+    
+	<div id="bids" class="item w2 h7">买单</div>	
+	
+    <div id="trades" class="item w6 h7">最新成交记录</div>
+
 
    	<audio id="audio" >
         	<source src="../static/Kalimba.mp3" type="audio/mpeg"></source>

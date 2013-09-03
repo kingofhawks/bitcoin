@@ -171,12 +171,14 @@ BROKER_URL = 'redis://192.168.192.128:6379/0'
 #CELERY_IMPORTS = ('dt.tasks', )
 
 from celery.schedules import crontab
+from datetime import timedelta
 
 CELERYBEAT_SCHEDULE = {
     # Update haystack search engine index
     'polling-market-data': {
         'task': 'api.tasks.polling_market_data',
-        'schedule': crontab(minute='*/1'),
+        #'schedule': crontab(minute='*/1'),
+        'schedule': timedelta(seconds=10),
         'args': (),
     },
 }

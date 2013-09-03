@@ -35,3 +35,7 @@
   position: absolute;
   border: 1px solid;
 }
+
+.autoscroll { 
+	overflow: auto; 
+}

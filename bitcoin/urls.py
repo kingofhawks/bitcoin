@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^market/$', views.market),
     url(r'^bitcoin/$', views.bitcoin),
     url(r'^dropdown/$', views.dropdown),
+    url(r'^update_alert/$', views.update_alert),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

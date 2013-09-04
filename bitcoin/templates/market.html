@@ -82,6 +82,34 @@ $(function() {
 			},
 		    
 		    rangeSelector: {
+		    	buttons: [{
+		            type: 'minute',
+		            count: 1,
+		            text: '1min'
+		        }, {
+		            type: 'day',
+		            count: 1,
+		            text: '3d'
+		        }, {
+		            type: 'week',
+		            count: 1,
+		            text: '1w'
+		        }, {
+		            type: 'month',
+		            count: 1,
+		            text: '1m'
+		        }, {
+		            type: 'month',
+		            count: 6,
+		            text: '6m'
+		        }, {
+		            type: 'year',
+		            count: 1,
+		            text: '1y'
+		        }, {
+		            type: 'all',
+		            text: 'All'
+		        }],
 		        selected: 1
 		    },
 
@@ -218,13 +246,19 @@ $(function() {
 	      var livePrice = JSON.parse(data);
 	      console.log(livePrice);
 	      //console.log(obj.sell);
+	      if (livePrice.last>={{alert.high}} || livePrice.last<={{alert.low}}){
+	    	  //trigger sound
+	    	  var audio = $('#audio');
+	    	  //audio.get(0).play(); also works
+	    	  audio.trigger('play');
+	      }
 	      var source   = $("#live_price").html();
 	      //console.log(source);
 	      var template = Handlebars.compile(source);
 	      //var context = {current: "11111"}
 	      var html    = template(livePrice);
 	      console.log(html);
-	  	  $('#summary').html(html);
+	  	  $('#summary').html(html);	  	
     }      
       //socket.emit('my other event', { my: 'data' });
   	  }); 
@@ -240,14 +274,14 @@ $(function() {
   	      //console.log(b);
   	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveTrades = JSON.parse(data);
-  	      console.log(liveTrades);
+  	      //console.log(liveTrades);
   	      //console.log(obj.sell);
   	      var source   = $("#live_trades").html();
   	      //console.log(source);
   	      var template = Handlebars.compile(source);
   	      //var context = {current: "11111"}
   	      var html    = template(liveTrades);
-  	      console.log(html);
+  	      //console.log(html);
   	  	  $('#trades').html(html);
       }             
     }); 
@@ -262,15 +296,15 @@ $(function() {
   	      //var b = data.replace(/'/g, '"');
   	      //console.log(b);
   	      //jQuery.parseJSON('{"name":"John"}');
-  	      var liveTrades = JSON.parse(data);
-  	      console.log(liveTrades);
+  	      var liveAsks = JSON.parse(data);
+  	      //console.log(liveAsks);
   	      //console.log(obj.sell);
   	      var source   = $("#asksTemplate").html();
   	      //console.log(source);
   	      var template = Handlebars.compile(source);
   	      //var context = {current: "11111"}
-  	      var html    = template(liveTrades);
-  	      console.log(html);
+  	      var html    = template(liveAsks);
+  	      //console.log(html);
   	  	  $('#asks').html(html);
       }             
     }); 
@@ -286,18 +320,26 @@ $(function() {
   	      //var b = data.replace(/'/g, '"');
   	      //console.log(b);
   	      //jQuery.parseJSON('{"name":"John"}');
-  	      var liveTrades = JSON.parse(data);
-  	      console.log(liveTrades);
+  	      var liveBids = JSON.parse(data);
+  	      //console.log(liveBids);
   	      //console.log(obj.sell);
   	      var source   = $("#bidsTemplate").html();
   	      //console.log(source);
   	      var template = Handlebars.compile(source);
   	      //var context = {current: "11111"}
-  	      var html    = template(liveTrades);
-  	      console.log(html);
+  	      var html    = template(liveBids);
+  	      //console.log(html);
   	  	  $('#bids').html(html);
       }             
     }); 
+    
+    
+    //console.log({{alert.high}});
+    $('#high').val({{alert.high}});
+    $('#low').val({{alert.low}});
+    $('#alertButton').click(function() {
+    	$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
+    });
 });
 </script>
 <script id="live_price" type="text/x-handlebars-template">
@@ -403,8 +445,16 @@ $(function() {
             </div>
           </li>
 		  <li><a href="#">Parameters</a></li>
-		  <li><a href="#">Alerts</a></li>
-		  
+		  <li class="dropdown">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Alerts <strong class="caret"></strong></a>
+            <div class="dropdown-menu w6" style="padding: 15px; padding-bottom: 0px;">
+              High Price:
+              <input id="high" style="margin-bottom: 15px;" type="text" size="30"/><br>
+              Low Price:
+              <input id="low" style="margin-bottom: 15px;" type="text" size="30"/>
+              <button id="alertButton" type="button" class="btn btn-primary" data-toggle="button">Submit</button>             
+			</div>
+          </li>
 		</ul>
   	</div>
   	
@@ -418,7 +468,7 @@ $(function() {
 
 
    	<audio id="audio" >
-        	<source src="../static/Kalimba.mp3" type="audio/mpeg"></source>
+        	<source src="../static/alert.mp3" type="audio/mpeg"></source>
 			Your browser does not support the audio element.
 		</audio>
 </div>

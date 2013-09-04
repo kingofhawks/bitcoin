@@ -3,3 +3,5 @@ requests
 redis
 simplejson
 django-celery
+pandas
+numby

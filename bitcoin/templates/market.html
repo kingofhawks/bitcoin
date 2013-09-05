@@ -21,6 +21,161 @@
   <script type="text/javascript" src="../static/js/exporting.js"></script>
   
 <script type="text/javascript">
+var show_chart = function(time_period){
+	$.getJSON('/ohlc/',{ period: time_period}, function(data) {
+		//console.log(data);
+		var json = JSON.parse(data);
+		//console.log(json);
+		// split the data set into ohlc and volume
+		var ohlc = [],
+			volume = [],
+			ma7 = [],
+			ma14 = [],
+			dataLength = data.length;
+			
+		for (i = 0; i < dataLength; i++) {
+			if (_.isUndefined(json[i])){
+				break;
+			}
+			console.log(json[i])
+					
+			ohlc.push([
+				json[i].time, // the date
+				json[i].open, // open
+				json[i].high, // high
+				json[i].low, // low
+				json[i].close // close
+			]);			
+			
+		}
+
+		// set the allowed units for data grouping
+		var groupingUnits = [[
+			'day',                         // unit name:day,week
+			[1]                             // allowed multiples
+		], [
+			'month',
+			[1, 2, 3, 4, 6]
+		]];
+
+		// create the chart
+		$('#chart').highcharts('StockChart', {
+			chart:{
+				backgroundColor:'#FCFFC5'
+			},
+			tooltip: {
+		    	valueDecimals: 2,		    	
+		    },
+			navigator: {
+				enabled: false
+			},
+			
+			scrollbar: {
+				enabled: false
+			},
+		    
+		    rangeSelector: {
+		    	buttons: [{
+		            type: 'minute',
+		            count: 1,
+		            text: '1min'
+		        }, {
+		            type: 'day',
+		            count: 1,
+		            text: '3d'
+		        }, {
+		            type: 'week',
+		            count: 1,
+		            text: '1w'
+		        }, {
+		            type: 'month',
+		            count: 1,
+		            text: '1m'
+		        }, {
+		            type: 'month',
+		            count: 6,
+		            text: '6m'
+		        }, {
+		            type: 'year',
+		            count: 1,
+		            text: '1y'
+		        }, {
+		            type: 'all',
+		            text: 'All'
+		        }],
+		        selected: 1
+		    },
+
+		    title: {
+		        text: 'Bitcoin Graph'
+		    },
+
+		    yAxis: [{
+		        title: {
+		            text: 'Price'
+		        },
+		        height: 200,
+		        lineWidth: 2
+		    }, {
+		        title: {
+		            text: 'Volume'
+		        },
+		        top: 300,
+		        height: 100,
+		        offset: 0,
+		        lineWidth: 2
+		    },{		  
+				title: {
+					text: 'MACD'
+				},
+		        top: 400,			
+		        height: 50,
+		        offset: 0,
+		        lineWidth: 2
+		    }],
+		    
+		    series: [{
+		        type: 'candlestick',
+		        name: 'AAPL',
+		        data: ohlc,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'column',
+		        name: 'Volume',
+		        data: volume,
+		        yAxis: 1,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'line',
+		        name: 'MA7',
+		        data: ma7,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'line',
+		        name: 'DEA',
+		        data: ma7,
+		        yAxis: 2,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'line',
+		        name: 'DIF',
+		        data: ma14,
+		        yAxis: 2,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }]
+		});
+	});
+}
 docReady( function() {
 	  var container = document.querySelector('#basic');
 	  var msnry = new Masonry( container, {
@@ -362,6 +517,27 @@ $(function() {
     $('#alertButton').click(function() {
     	$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
     });
+    
+    //Change time period
+    $('#m1').click(function(){
+    	show_chart('1Min');
+    });
+    
+	$('#m15').click(function(){
+		show_chart('15Min');
+    });
+	
+	$('#h6').click(function(){
+		show_chart('6H');
+    });
+	
+	$('#d1').click(function(){
+		show_chart('D');
+    });
+	
+	$('#w1').click(function(){
+		show_chart('W');
+    });
 });
 </script>
 <script id="live_price" type="text/x-handlebars-template">
@@ -441,11 +617,11 @@ $(function() {
   	<div class="item w4 h3">  	
 	  	<ul class="nav nav-pills">
 	  	  <p class="navbar-text">Time Period:</p>
-		  <li><a href="#">1w</a></li>
-		  <li><a href="#">1d</a></li>
-		  <li><a href="#">6h</a></li>
-		  <li><a href="#">15m</a></li>
-		  <li><a href="#">1m</a></li>
+		  <li><a id="w1" href="#">1w</a></li>
+		  <li><a id="d1" href="#">1d</a></li>
+		  <li><a id="h6" href="#">6h</a></li>
+		  <li><a id="m15" href="#">15m</a></li>
+		  <li><a id="m1" href="#">1m</a></li>
 		  <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Settings <strong class="caret"></strong></a>
             <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">

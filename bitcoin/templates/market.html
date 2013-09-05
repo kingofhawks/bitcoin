@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../static/css/bitcoin.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap-theme.css" />
+  <link rel='stylesheet' href='../static/css/spectrum.css' />
   
   <script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>  
   <script src="http://localhost/socket.io/socket.io.js"></script>
@@ -15,6 +16,9 @@
   <script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="../static/js/handlebars.js"></script>
   <script type="text/javascript" src="../static/js/underscore-min.js"></script>
+  <script type="text/javascript" src='../static/js/spectrum.js'></script>
+  <script type="text/javascript" src="../static/js/highstock.js"></script>
+  <script type="text/javascript" src="../static/js/exporting.js"></script>
   
 <script type="text/javascript">
 docReady( function() {
@@ -73,6 +77,12 @@ $(function() {
 
 		// create the chart
 		$('#chart').highcharts('StockChart', {
+			chart:{
+				backgroundColor:'#FCFFC5'
+			},
+			tooltip: {
+		    	valueDecimals: 2,		    	
+		    },
 			navigator: {
 				enabled: false
 			},
@@ -188,6 +198,7 @@ $(function() {
 	    e.stopPropagation();
 	  });
 	
+	
 	//show/hide MA indicator
 	$('#showMa').click(function(){
 		var chart = $('#chart').highcharts(),
@@ -205,6 +216,20 @@ $(function() {
 			series.hide();
 		}		
 	})
+	
+	$("#chartBackColor").spectrum({
+		preferredFormat: "hex",
+		showInput: true,
+		change: function(color) {
+	    	var chart = $('#chart').highcharts();
+	    	console.log(chart.options.chart.backgroundColor);
+	    	//console.log(color.toHexString());
+	    	chart.chartBackground.css({
+                color: color.toHexString(),
+                fontSize: '16px'
+            });
+	    },
+	});
 	
 	//var audio = $('#audio');
 	//audio.get(0).play();
@@ -246,7 +271,10 @@ $(function() {
 	      var livePrice = JSON.parse(data);
 	      console.log(livePrice);
 	      //console.log(obj.sell);
+	      console.log({{alert.high}});
+	      console.log({{alert.low}});
 	      if (livePrice.last>={{alert.high}} || livePrice.last<={{alert.low}}){
+	    	  console.log('raise alert**************');
 	    	  //trigger sound
 	    	  var audio = $('#audio');
 	    	  //audio.get(0).play(); also works
@@ -426,25 +454,39 @@ $(function() {
 		  <li><a href="#">1m</a></li>
 		  <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Settings <strong class="caret"></strong></a>
-            <div class="dropdown-menu w6" style="padding: 15px; padding-bottom: 0px;">
-              <!-- Login form here -->
+            <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
               Main Indicator:
               <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">MA</button>
-              <button id="hideMa" type="button" class="btn btn-primary" data-toggle="button">None</button>
+              <button id="hideMa" type="button" class="btn btn-primary" data-toggle="button">None</button><br>
               Technical Indicator:
               <button type="button" class="btn btn-primary" data-toggle="button">MACD</button>
               <button type="button" class="btn btn-primary" data-toggle="button">KDJ</button>
-              <button type="button" class="btn btn-primary" data-toggle="button">None</button>
-			  <form name="settingForm" method="get">
-				  <input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="80"/>
-				  <input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
-				  <input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
-				  <label class="string optional" for="user_remember_me"> Remember me</label>
-				  <button id="disable2">Disable MA</button>				  
-			  </form>
+              <button type="button" class="btn btn-primary" data-toggle="button">None</button><br>
+              <label>Chart Background Color:</label>
+              <input type='text' id="chartBackColor"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>              
             </div>
           </li>
-		  <li><a href="#">Parameters</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Parameters <strong class="caret"></strong></a>
+            <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+              MA:
+               <input type='text' id="ma1"/>
+               <input type='text' id="ma2"/>
+               <input type='text' id="ma3"/>
+               <input type='text' id="ma4"/>
+              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              MACD:
+               <input type='text' id="ma1"/>
+               <input type='text' id="ma2"/>
+               <input type='text' id="ma3"/>               
+              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              KDJ:
+               <input type='text' id="ma1"/>
+               <input type='text' id="ma2"/>
+               <input type='text' id="ma3"/>               
+              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>                           
+            </div>
+          </li>
 		  <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Alerts <strong class="caret"></strong></a>
             <div class="dropdown-menu w6" style="padding: 15px; padding-bottom: 0px;">
@@ -468,12 +510,11 @@ $(function() {
 
 
    	<audio id="audio" >
-        	<source src="../static/alert.mp3" type="audio/mpeg"></source>
+        <source src="../static/alert.mp3" type="audio/mpeg"></source>
 			Your browser does not support the audio element.
-		</audio>
+	</audio>
 </div>
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+
 
 </body>
 </html>

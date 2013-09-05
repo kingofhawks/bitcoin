@@ -30,7 +30,13 @@ print d
 d.time = pd.to_datetime(d.time, unit='s')
 d.set_index('time', inplace=True)
 print d
-test = d['amount'].resample('H', how='ohlc')
-print test
-test = d['amount'].resample('1Min', how='ohlc')
-print test
+volume = d['amount'].resample('H', how='ohlc') #maybe how should be "sum"?
+print volume
+price = d['price'].resample('1Min', how='ohlc')
+print price
+js = price.to_json(date_format='iso', orient='records')
+print js
+price = d['price'].resample('1Min', how='ohlc').reset_index()
+print price
+js = price.to_json(date_format='iso', orient='records')
+print js

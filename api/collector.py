@@ -36,23 +36,23 @@ def get_string_data(data):
     js = json.dumps(data)
     return js
 
-    
-params = dict(
+
+if __name__ == "__main__":    
+    params = dict(
         op='futures'
     )
-orders = get_orders('https://796.com/apiV2/depth/100.html',params)
-bids = orders[0]
-asks = orders[1]
-print bids
-print get_string_data(bids)
-print asks
-
-trades = get_trades('https://796.com/apiV2/trade/100.html',params)
-print trades
-print len(trades)
-import datetime
-print datetime.datetime.fromtimestamp(trades[0].get('time')).strftime('%Y-%m-%d %H:%M:%S')
-print datetime.datetime.fromtimestamp(trades[len(trades)-1].get('time')).strftime('%Y-%m-%d %H:%M:%S')
-ticker = get_ticker('https://796.com/apiV2/ticker.html',params)
-print ticker
-print get_string_data(ticker)
+    orders = get_orders('https://796.com/apiV2/depth/100.html',params)
+    bids = orders[0]
+    asks = orders[1]
+    print bids
+    print get_string_data(bids)
+    print asks
+    trades = get_trades('https://796.com/apiV2/trade/100.html',params)
+    print trades
+    print len(trades)
+    import datetime
+    print datetime.datetime.fromtimestamp(trades[0].get('time')).strftime('%Y-%m-%d %H:%M:%S')
+    print datetime.datetime.fromtimestamp(trades[len(trades)-1].get('time')).strftime('%Y-%m-%d %H:%M:%S')
+    ticker = get_ticker('https://796.com/apiV2/ticker.html',params)
+    print ticker
+    print get_string_data(ticker)

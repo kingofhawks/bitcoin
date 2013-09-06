@@ -19,6 +19,7 @@
   <script type="text/javascript" src='../static/js/spectrum.js'></script>
   <script type="text/javascript" src="../static/js/highstock.js"></script>
   <script type="text/javascript" src="../static/js/exporting.js"></script>
+  <script type="text/javascript" src="../static/js/moment.min.js"></script>
   
 <script type="text/javascript">
 var show_chart = function(time_period){
@@ -37,7 +38,7 @@ var show_chart = function(time_period){
 			if (_.isUndefined(json[i])){
 				break;
 			}
-			console.log(json[i])
+			//console.log(json[i])
 					
 			ohlc.push([
 				json[i].time, // the date
@@ -103,7 +104,7 @@ var show_chart = function(time_period){
 		            type: 'all',
 		            text: 'All'
 		        }],
-		        selected: 1
+		        selected: 6
 		    },
 
 		    title: {
@@ -203,7 +204,7 @@ $(function() {
 			if (_.isUndefined(json[i])){
 				break;
 			}
-			console.log(json[i])
+			//console.log(json[i])
 					
 			ohlc.push([
 				json[i].time, // the date
@@ -269,7 +270,7 @@ $(function() {
 		            type: 'all',
 		            text: 'All'
 		        }],
-		        selected: 1
+		        selected: 6
 		    },
 
 		    title: {
@@ -406,6 +407,7 @@ $(function() {
     audioElement.pause();
     });
     
+    //websocket part!
     var socket = io.connect('http://localhost:80');
     socket.on('news', function (data) {
       console.log("new received*****************");
@@ -455,6 +457,11 @@ $(function() {
   	      //console.log(obj.sell);
   	      var source   = $("#live_trades").html();
   	      //console.log(source);
+  	      Handlebars.registerHelper('timestamp', function() {  	      
+			  return new Handlebars.SafeString(					  
+					  moment.unix(this.time).format('YYYY-M-D, h:mm:ss a')
+			  );
+		 });
   	      var template = Handlebars.compile(source);
   	      //var context = {current: "11111"}
   	      var html    = template(liveTrades);
@@ -465,7 +472,7 @@ $(function() {
     
     socket.on('asks', function (data) {
     	console.log("asks received*****************");
-        //console.log(data);
+        console.log(data);
         //console.log(_.isObject(data));
         
         if (!_.isObject(data) && typeof data.replace === 'function'){
@@ -474,7 +481,7 @@ $(function() {
   	      //console.log(b);
   	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveAsks = JSON.parse(data);
-  	      //console.log(liveAsks);
+  	      console.log(liveAsks);
   	      //console.log(obj.sell);
   	      var source   = $("#asksTemplate").html();
   	      //console.log(source);
@@ -557,7 +564,7 @@ $(function() {
     <tbody>
       {{#each []}}
         <tr>
-          <td>{{this.time}}</td>
+          <td>{{timestamp}}</td>
           <td>{{this.price}}</td>
           <td>{{this.type}}</td>
 		  <td>{{this.amount}}</td>

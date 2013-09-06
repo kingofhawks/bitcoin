@@ -36,6 +36,15 @@ def get_string_data(data):
     js = json.dumps(data)
     return js
 
+#get accumulated volume of asks or bids
+def get_accumulated_volume(orders):
+    for i in range(len(orders)):
+        order = orders[i]
+        previous = 0
+        if (i>=1):
+            previous = orders[i-1][2] 
+        order.append(float(str(order[1]))+float(previous))
+    return orders
 
 if __name__ == "__main__":    
     params = dict(
@@ -45,8 +54,23 @@ if __name__ == "__main__":
     bids = orders[0]
     asks = orders[1]
     print bids
-    print get_string_data(bids)
+    print get_string_data(get_accumulated_volume(bids))
     print asks
+    asks1 = get_string_data(asks)
+    print asks1
+#    import simplejson as json
+#    data = json.loads(asks1)
+    print '***************'
+#    for i in range(len(asks)):
+#        ask = asks[i]
+#        previous = 0
+#        if (i>=1):
+#            previous = asks[i-1][2] 
+#        ask.append(float(str(ask[1]))+float(previous))
+#
+#    print asks
+    print get_string_data(get_accumulated_volume(asks))
+
     trades = get_trades('https://796.com/apiV2/trade/100.html',params)
     print trades
     print len(trades)

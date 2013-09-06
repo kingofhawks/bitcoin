@@ -2,9 +2,9 @@ from django.db import models
 
 # Create your models here.
 class Trade(models.Model):
-    time = models.CharField(max_length=30)
+    time = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    amount = models.IntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     type = models.CharField(max_length=4)
     
 class Ticker(models.Model):

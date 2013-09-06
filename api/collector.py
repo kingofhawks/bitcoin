@@ -5,6 +5,7 @@ Created on 2013-8-29
 '''
 import  requests
 import simplejson as json
+from api.models import Trade
 
 def get_json(url,params):   
     resp = requests.get(url=url, params=params)
@@ -46,6 +47,23 @@ def get_accumulated_volume(orders):
         order.append(float(str(order[1]))+float(previous))
     return orders
 
+#save live trades into DB
+def save_trades(trades):        
+    for data in trades:
+        time = int(data['time'])
+        if (int(time)>int(get_latest_trade_time())):
+            trade = Trade()        
+            trade.time = time
+            trade.price = float(data['price'])
+            trade.amount = float(data['amount'])
+            trade.type = data['type']
+            trade.save()
+
+#get the latest trade's time        
+def get_latest_trade_time():
+    trades = Trade.objects.order_by('-time')
+    return trades[0].time
+
 if __name__ == "__main__":    
     params = dict(
         op='futures'
@@ -74,6 +92,9 @@ if __name__ == "__main__":
     trades = get_trades('https://796.com/apiV2/trade/100.html',params)
     print trades
     print len(trades)
+    print get_latest_trade_time()
+    save_trades(trades)
+
     import datetime
     print datetime.datetime.fromtimestamp(trades[0].get('time')).strftime('%Y-%m-%d %H:%M:%S')
     print datetime.datetime.fromtimestamp(trades[len(trades)-1].get('time')).strftime('%Y-%m-%d %H:%M:%S')

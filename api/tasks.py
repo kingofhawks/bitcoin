@@ -3,7 +3,7 @@ Created on 2013-9-2
 
 @author: Simon
 '''
-from collector import get_ticker,get_trades,get_orders,get_string_data,get_accumulated_volume
+from collector import get_ticker,get_trades,get_orders,get_string_data,get_accumulated_volume,save_trades
 from redis_api import publish
 from celery import task
 
@@ -31,4 +31,4 @@ def polling_market_data():
     publish('trades',get_string_data(trades))
     
     #save trades to DB
-    
+    save_trades(trades)

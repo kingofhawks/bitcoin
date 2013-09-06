@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 from api.collector import get_trades,get_string_data
 from pandas import *
+from api.data_analysis import MA
 #import json
     
 def test(request):
@@ -50,7 +51,7 @@ def ohlc(request):
     period = request.GET.get('period')
     print period;
     if period is None:
-        period = '1Min'
+        period = '15Min'
     params = dict(
         op='futures'
     )
@@ -62,7 +63,7 @@ def ohlc(request):
     #print d
     d.time = pd.to_datetime(d.time, unit='s')
     d.set_index('time', inplace=True)
-    #print d
+    
     volume = d['amount'].resample(period, how='sum') #maybe how should be "sum"?
     print volume
 
@@ -72,6 +73,11 @@ def ohlc(request):
     
     s = Series(volume,name='amount')
     result = price.join(s)
+    
+    result = MA(result,5)
+    result = MA(result,10)
+    result = MA(result,20)
+    result = MA(result,30)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     print js

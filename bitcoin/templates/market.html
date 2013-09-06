@@ -188,7 +188,7 @@ docReady( function() {
 $(function() {
 	var jsonUrl = "{% static data.json%}"
 
-	//$.getJSON(jsonUrl+'data.json', function(data) {
+	//$.getJSON(jsonUrl+'data15.json', function(data) {
 	$.getJSON('/ohlc/', function(data) {
 		//console.log(data);
 		var json = JSON.parse(data);
@@ -632,36 +632,102 @@ $(function() {
 		  <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Settings <strong class="caret"></strong></a>
             <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+            <table>
+            <tr>
+            <td>
               Main Indicator:
+              </td>
+              <td>
               <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">MA</button>
+              </td>
+              <td>
               <button id="hideMa" type="button" class="btn btn-primary" data-toggle="button">None</button><br>
+              </td>
+              <tr>
+              <td>
               Technical Indicator:
+              </td>
+              <td>
               <button type="button" class="btn btn-primary" data-toggle="button">MACD</button>
+              </td>
+              <td>
               <button type="button" class="btn btn-primary" data-toggle="button">KDJ</button>
+              </td>
+              <td>
               <button type="button" class="btn btn-primary" data-toggle="button">None</button><br>
-              <label>Chart Background Color:</label>
-              <input type='text' id="chartBackColor"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>              
+              </td>
+              <td>
+              </tr>
+              <tr>
+              <td>
+              Background Color:
+              </td>
+              <td>
+              <input type='text' id="chartBackColor"/><br>
+              </td>
+              </tr>
+              </table>              
             </div>
           </li>
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Parameters <strong class="caret"></strong></a>
             <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-              MA:
-               <input type='text' id="ma1"/>
-               <input type='text' id="ma2"/>
-               <input type='text' id="ma3"/>
-               <input type='text' id="ma4"/>
-              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+            <table>
+            <tr>
+              <td>
+                MA:
+              </td>
+              <td>
+               <input type='text' id="ma1" style="width:20px" maxlength="3" value="5"/>
+               </td>
+               <td>
+               <input type='text' id="ma2" style="width:20px" maxlength="3" value="10"/>
+               </td>
+               <td>
+               <input type='text' id="ma3" style="width:20px" maxlength="3" value="20"/>
+               </td>
+               <td>
+               <input type='text' id="ma4" style="width:20px" maxlength="3" value="30"/>
+               </td>
+               <td>
+                <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              </td>
+              <tr>
+              <tr>
+              <td>
               MACD:
-               <input type='text' id="ma1"/>
-               <input type='text' id="ma2"/>
-               <input type='text' id="ma3"/>               
+              </td>
+              <td>
+               <input type='text' id="ma1" style="width:20px" maxlength="3" value="12"/>
+               </td>
+               <td>
+               <input type='text' id="ma2" style="width:20px" maxlength="3" value="26"/>
+               </td>
+               <td>
+               <input type='text' id="ma3" style="width:20px" maxlength="3" value="9"/>
+               </td>
+               <td>               
               <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              </td>
+              </tr>
+              <tr>
+              <td>
               KDJ:
-               <input type='text' id="ma1"/>
-               <input type='text' id="ma2"/>
-               <input type='text' id="ma3"/>               
-              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>                           
+              </td>
+              <td>
+               <input type='text' id="ma1" style="width:20px" maxlength="3" value="9"/>
+               </td>
+               <td>
+               <input type='text' id="ma2" style="width:20px" maxlength="3" value="3"/>
+               </td>
+               <td>
+               <input type='text' id="ma3" style="width:20px" maxlength="3" value="3"/>
+               </td>
+               <td>               
+              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              </td>
+              </tr>
+              </table>                           
             </div>
           </li>
 		  <li class="dropdown">

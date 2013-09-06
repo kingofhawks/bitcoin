@@ -8,6 +8,24 @@ import pandas as pd
 from pandas import *
 from collector import get_string_data,get_trades
 
+#Moving Average
+def MA(df, n):
+    MA = Series(rolling_mean(df['close'], n,min_periods=2), name = 'MA_' + str(n))
+    df = df.join(MA)
+    return df
+
+#MACD, MACD Signal and MACD difference
+def MACD(df, n_fast, n_slow,span = 9):
+    EMAfast = Series(ewma(df['close'], span = n_fast, min_periods = n_slow - 1))
+    EMAslow = Series(ewma(df['close'], span = n_slow, min_periods = n_slow - 1))
+    MACD = Series(EMAfast - EMAslow, name = 'MACD_' + str(n_fast) + '_' + str(n_slow))
+    MACDsign = Series(ewma(MACD, span, min_periods = 8), name = 'MACDsign_' + str(n_fast) + '_' + str(n_slow))
+    MACDdiff = Series(MACD - MACDsign, name = 'MACDdiff_' + str(n_fast) + '_' + str(n_slow))
+    df = df.join(MACD)
+    df = df.join(MACDsign)
+    df = df.join(MACDdiff)
+    return df
+
 
 d = {'TIMESTAMP' : Series([1294311545, 1294317813, 1294318449]),
       'PRICE' : Series([24990, 25499, 25499]),
@@ -38,13 +56,41 @@ d.time = pd.to_datetime(d.time, unit='s')
 d.set_index('time', inplace=True)
 #print d.to_json(orient='records')
 
-volume = d['amount'].resample('1Min', how='ohlc') #maybe how should be "sum"?
+print 'price***************'
+period = '15Min'
+volume = d['amount'].resample(period, how='sum') #maybe how should be "sum"?
 print volume
-price = d['price'].resample('1Min', how='ohlc')
+print volume.reset_index().to_json(date_format='iso', orient='records')
+print type(volume)
+
+price = d['price'].resample(period, how='ohlc')
 print price
+print type(price)
+
+#join OHLC and volume
+s = Series(volume,name='amount')
+a = price.join(s)
+print a
+
+print '****************OHLC with volume***************'
+js = a.reset_index().to_json(date_format='iso', orient='records')
+print js
+#price.join(volume)
+#merged = merge(price, volume,on='time')
+#print 'joined***************'
+#print merged.to_json(date_format='iso', orient='records')
+
+print 'ma***************'
+ma = MA(price,7)
+print ma.to_json(date_format='iso', orient='records')
+
+
+macd = MACD(price,12,26,9)
+print macd.to_json(date_format='iso', orient='records')
+
 js = price.to_json(date_format='iso', orient='records')
 #print js
-price = d['price'].resample('1Min', how='ohlc').reset_index()
+price = d['price'].resample(period, how='ohlc').reset_index()
 print price
 js = price.to_json(date_format='iso', orient='records')
 print js

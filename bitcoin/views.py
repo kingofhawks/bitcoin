@@ -13,6 +13,8 @@ from api.models import Alert
 from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 from api.collector import get_trades,get_string_data
+from pandas import *
+#import json
     
 def test(request):
     return render_to_response('bitcoin1.html', locals())
@@ -61,14 +63,18 @@ def ohlc(request):
     d.time = pd.to_datetime(d.time, unit='s')
     d.set_index('time', inplace=True)
     #print d
-    volume = d['amount'].resample(period, how='ohlc') #maybe how should be "sum"?
+    volume = d['amount'].resample(period, how='sum') #maybe how should be "sum"?
     print volume
 
-    price = d['price'].resample(period, how='ohlc').reset_index()
+    #price = d['price'].resample(period, how='ohlc').reset_index()
+    price = d['price'].resample(period, how='ohlc')
     print price
     
-    js = price.to_json(date_format='iso', orient='records')
+    s = Series(volume,name='amount')
+    result = price.join(s)
+    
+    js = result.reset_index().to_json(date_format='iso', orient='records')
     print js
-    import json
+    
     return HttpResponse(json.dumps(js), mimetype="application/json") 
 

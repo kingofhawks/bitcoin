@@ -38,7 +38,7 @@ var show_chart = function(time_period){
 			if (_.isUndefined(json[i])){
 				break;
 			}
-			//console.log(json[i])
+			console.log(json[i])
 					
 			ohlc.push([
 				json[i].time, // the date
@@ -48,6 +48,11 @@ var show_chart = function(time_period){
 				json[i].close // close
 			]);			
 			
+			console.log(json[i].amount)
+			volume.push([
+				json[i].time, // the date
+				json[i].amount // the volume
+			]);
 		}
 
 		// set the allowed units for data grouping
@@ -212,7 +217,8 @@ $(function() {
 				json[i].high, // high
 				json[i].low, // low
 				json[i].close // close
-			]);			
+			]);					
+			
 			
 		}
 
@@ -411,7 +417,7 @@ $(function() {
     var socket = io.connect('http://localhost:80');
     socket.on('news', function (data) {
       console.log("new received*****************");
-      console.log(data);
+      //console.log(data);
       //console.log(_.isObject(data));
       
       if (!_.isObject(data) && typeof data.replace === 'function'){
@@ -420,10 +426,10 @@ $(function() {
 	      //console.log(b);
 	      //jQuery.parseJSON('{"name":"John"}');
 	      var livePrice = JSON.parse(data);
-	      console.log(livePrice);
+	      //console.log(livePrice);
 	      //console.log(obj.sell);
-	      console.log({{alert.high}});
-	      console.log({{alert.low}});
+	      //console.log({{alert.high}});
+	      //console.log({{alert.low}});
 	      if (livePrice.last>={{alert.high}} || livePrice.last<={{alert.low}}){
 	    	  console.log('raise alert**************');
 	    	  //trigger sound
@@ -436,7 +442,7 @@ $(function() {
 	      var template = Handlebars.compile(source);
 	      //var context = {current: "11111"}
 	      var html    = template(livePrice);
-	      console.log(html);
+	     // console.log(html);
 	  	  $('#summary').html(html);	  	
     }      
       //socket.emit('my other event', { my: 'data' });
@@ -472,7 +478,7 @@ $(function() {
     
     socket.on('asks', function (data) {
     	console.log("asks received*****************");
-        console.log(data);
+        //console.log(data);
         //console.log(_.isObject(data));
         
         if (!_.isObject(data) && typeof data.replace === 'function'){
@@ -481,7 +487,7 @@ $(function() {
   	      //console.log(b);
   	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveAsks = JSON.parse(data);
-  	      console.log(liveAsks);
+  	      //console.log(liveAsks);
   	      //console.log(obj.sell);
   	      var source   = $("#asksTemplate").html();
   	      //console.log(source);

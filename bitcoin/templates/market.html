@@ -30,8 +30,13 @@ var show_chart = function(time_period){
 		// split the data set into ohlc and volume
 		var ohlc = [],
 			volume = [],
-			ma7 = [],
-			ma14 = [],
+			ma5 = [],
+			ma10 = [],
+			ma20 = [],
+			ma30 = [],
+			macd = [],
+			dea = [],
+			dif = [],			
 			dataLength = data.length;
 			
 		for (i = 0; i < dataLength; i++) {
@@ -48,10 +53,44 @@ var show_chart = function(time_period){
 				json[i].close // close
 			]);			
 			
-			console.log(json[i].amount)
+			ma5.push([
+				json[i].time, // the date
+				json[i].MA_5 // MA
+			]);
+			
+			ma10.push([
+				json[i].time, // the date
+				json[i].MA_10 // MA
+			]);
+			
+			ma20.push([
+				json[i].time, // the date
+				json[i].MA_20 // MA
+			]);
+			
+			ma30.push([
+				json[i].time, // the date
+				json[i].MA_30 // MA
+			]);
+						
 			volume.push([
 				json[i].time, // the date
 				json[i].amount // the volume
+			]);
+			
+			macd.push([
+				json[i].time, // the date
+				json[i].MACD_12_26 // the volume
+			]);
+			
+			dea.push([
+				json[i].time, // the date
+				json[i].MACDsign_12_26 // the volume
+			]);
+			
+			dif.push([
+				json[i].time, // the date
+				json[i].MACDdiff_12_26 // the volume
 			]);
 		}
 
@@ -157,15 +196,44 @@ var show_chart = function(time_period){
 		        }
 		    }, {
 		        type: 'line',
-		        name: 'MA7',
-		        data: ma7,
+		        name: 'MA5',
+		        data: ma5,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    },{
+		        type: 'line',
+		        name: 'MA10',
+		        data: ma10,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    },{
+		        type: 'line',
+		        name: 'MA20',
+		        data: ma20,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    },{
+		        type: 'line',
+		        name: 'MA30',
+		        data: ma30,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'column',
+		        name: 'MACD',
+		        data: macd,
+		        yAxis: 2,
 		        dataGrouping: {
 					units: groupingUnits
 		        }
 		    }, {
 		        type: 'line',
 		        name: 'DEA',
-		        data: ma7,
+		        data: dea,
 		        yAxis: 2,
 		        dataGrouping: {
 					units: groupingUnits
@@ -173,7 +241,7 @@ var show_chart = function(time_period){
 		    }, {
 		        type: 'line',
 		        name: 'DIF',
-		        data: ma14,
+		        data: dif,
 		        yAxis: 2,
 		        dataGrouping: {
 					units: groupingUnits
@@ -357,20 +425,27 @@ $(function() {
 	
 	//show/hide MA indicator
 	$('#showMa').click(function(){
-		var chart = $('#chart').highcharts(),
-        	series = chart.series[2];
-		if (series.visible) {			
-		} else {
-			series.show();
-		}		
+		var chart = $('#chart').highcharts();
+        var	series = chart.series;
+        _.each(series, function(item){
+        	if (_.isString(item.name) && item.name.indexOf("MA")!= -1){
+        		if (!item.visible) {	
+            		item.show();
+            	}
+        	}        	
+       });	
 	})
 	
 	$('#hideMa').click(function(){
-		var chart = $('#chart').highcharts(),
-        	series = chart.series[2];
-		if (series.visible) {
-			series.hide();
-		}		
+		var chart = $('#chart').highcharts();
+        var	series = chart.series;
+        _.each(series, function(item){
+        	if (_.isString(item.name) && item.name.indexOf("MA")!= -1){
+        		if (item.visible) {	
+            		item.hide();
+            	}
+        	}        	
+       });		
 	})
 	
 	$("#chartBackColor").spectrum({

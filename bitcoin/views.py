@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 from api.collector import get_trades,get_string_data
 from pandas import *
-from api.data_analysis import MA
+from api.data_analysis import MA,MACD
 #import json
     
 def test(request):
@@ -74,10 +74,14 @@ def ohlc(request):
     s = Series(volume,name='amount')
     result = price.join(s)
     
+    #MA indicator
     result = MA(result,5)
     result = MA(result,10)
     result = MA(result,20)
     result = MA(result,30)
+    
+    #MACD indicator
+    result = MACD(result,12,26,9)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     print js

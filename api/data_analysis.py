@@ -16,10 +16,12 @@ def MA(df, n):
 
 #MACD, MACD Signal and MACD difference
 def MACD(df, n_fast, n_slow,span = 9):
-    EMAfast = Series(ewma(df['close'], span = n_fast, min_periods = n_slow - 1))
-    EMAslow = Series(ewma(df['close'], span = n_slow, min_periods = n_slow - 1))
+    #EMAfast = Series(ewma(df['close'], span = n_fast, min_periods = n_slow - 1))
+    #EMAslow = Series(ewma(df['close'], span = n_slow, min_periods = n_slow - 1))
+    EMAfast = Series(ewma(df['close'], span = n_fast, min_periods = 1))
+    EMAslow = Series(ewma(df['close'], span = n_slow, min_periods = 1))
     MACD = Series(EMAfast - EMAslow, name = 'MACD_' + str(n_fast) + '_' + str(n_slow))
-    MACDsign = Series(ewma(MACD, span, min_periods = 8), name = 'MACDsign_' + str(n_fast) + '_' + str(n_slow))
+    MACDsign = Series(ewma(MACD, span, min_periods = 1), name = 'MACDsign_' + str(n_fast) + '_' + str(n_slow))
     MACDdiff = Series(MACD - MACDsign, name = 'MACDdiff_' + str(n_fast) + '_' + str(n_slow))
     df = df.join(MACD)
     df = df.join(MACDsign)
@@ -84,7 +86,7 @@ print 'ma***************'
 ma = MA(price,7)
 print ma.to_json(date_format='iso', orient='records')
 
-
+print 'MACD***************'
 macd = MACD(price,12,26,9)
 print macd.to_json(date_format='iso', orient='records')
 

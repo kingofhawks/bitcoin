@@ -15,12 +15,17 @@ import pandas as pd
 from api.collector import get_trades,get_string_data
 from pandas import *
 from api.data_analysis import MA,MACD
+from django.utils.translation import ugettext as _
+from api.dao import get_markets
 #import json
     
 def test(request):
     return render_to_response('bitcoin1.html', locals())
 
 def index(request):
+    output = _("index_title")
+    print output
+    print request.LANGUAGE_CODE
     return render_to_response('index.html', locals())
 
 def market(request):
@@ -47,6 +52,22 @@ def get_alert(request):
     alert = Alert.objects.distinct()
     print alert.values()[0]['high']
     return 
+
+def markets(request):
+    markets = get_markets()
+    print markets
+    result = []
+    for obj in markets:
+        result.append({
+        'name': obj.name,
+        'last': obj.last,
+        'high': obj.high,
+        'low': obj.low,
+        'vol': obj.vol})
+
+    print result
+    #print json.dumps(markets)
+    return HttpResponse(json.dumps(result), mimetype="application/json") 
 
 def ohlc(request):    
     #load from JSON data

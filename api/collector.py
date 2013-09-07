@@ -58,6 +58,19 @@ def save_trades(trades):
             trade.amount = float(data['amount'])
             trade.type = data['type']
             trade.save()
+            
+#save live price into DB
+def save_live_price(live_price):
+    from api.models import Ticker
+    ticker = Ticker.objects.get(name=live_price['market'])
+    ticker.last = live_price['last']
+    ticker.high = live_price['high']
+    ticker.low = live_price['low']
+    ticker.vol = live_price['vol']
+    ticker.sell = live_price['sell']
+    ticker.buy = live_price['buy']
+    ticker.save()        
+
 
 #get the latest trade's time        
 def get_latest_trade_time():

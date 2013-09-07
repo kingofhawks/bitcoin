@@ -8,15 +8,18 @@ class Trade(models.Model):
     type = models.CharField(max_length=4)
     
 class Ticker(models.Model):
-    last = models.DecimalField(max_digits=10, decimal_places=2)
-    high = models.DecimalField(max_digits=10, decimal_places=2)
-    low = models.DecimalField(max_digits=10, decimal_places=2)
-    vol = models.DecimalField(max_digits=10, decimal_places=2)
-    buy = models.DecimalField(max_digits=10, decimal_places=2)
-    sell = models.DecimalField(max_digits=10, decimal_places=2)
+    last = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    high = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    low = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    vol = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    buy = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    sell = models.DecimalField(max_digits=10, decimal_places=2,null=True)
     name = models.CharField(max_length=30)
     coin = models.CharField(max_length=4)
     content = models.CharField(max_length=64)
+    ticker = models.CharField(max_length=64)#ticker API
+    depth = models.CharField(max_length=64)#depth API
+    trade = models.CharField(max_length=64)#trade API
     
 class Depth(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -24,7 +27,16 @@ class Depth(models.Model):
     type = models.CharField(max_length=4)
     
 class Alert(models.Model):
-    #threshold = models.DecimalField(max_digits=10, decimal_places=2)
     high = models.DecimalField(max_digits=10, decimal_places=2)
     low = models.DecimalField(max_digits=10, decimal_places=2)   
+    
+class Account(models.Model):
+    username = models.CharField(max_length=32)
+    password = models.CharField(max_length=32)
+    mail = models.CharField(max_length=32)
+    QQ = models.CharField(max_length=32)
+    baojing = models.CharField(max_length=32)
+    baojingdown = models.CharField(max_length=32)
+    qqbaojing = models.CharField(max_length=32)
+    qqbaojingdown = models.CharField(max_length=32) 
     

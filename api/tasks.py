@@ -3,20 +3,34 @@ Created on 2013-9-2
 
 @author: Simon
 '''
-from collector import get_ticker,get_trades,get_orders,get_string_data,get_accumulated_volume,save_trades
+from collector import get_ticker,get_trades,get_orders,get_string_data,get_accumulated_volume,save_trades,save_live_price
 from redis_api import publish
 from celery import task
+from dao import get_markets
+from urlparse import urlparse, parse_qsl
 
-@task()
-def polling_market_data():
-    params = dict(
-        op='futures'
-    )
-    #live price
-    data = get_ticker('https://796.com/apiV2/ticker.html',params)
-    publish('chat',get_string_data(data))
+#parse query parameters from URL
+def get_query_parameters(url):        
+    u = urlparse(url)
+    query_dict = dict(parse_qsl(u.query))
+    return query_dict
     
-    orders = get_orders('https://796.com/apiV2/depth/100.html',params)
+def polling(market):
+    name = market.name
+    ticker = market.ticker
+    depth = market.depth
+    trade = market.trade
+    print '%s,%s,%s,%s' % (name,ticker,depth,trade)
+    
+    #live price
+    live_price = get_ticker(ticker,get_query_parameters(ticker))
+    live_price['market'] = name
+    publish('chat',get_string_data(live_price))
+    
+    #save live price
+    save_live_price(live_price)
+    
+    orders = get_orders(depth,get_query_parameters(depth))
     bids = orders[0]
     asks = orders[1]
 
@@ -27,8 +41,18 @@ def polling_market_data():
     publish('bids',get_string_data(get_accumulated_volume(bids)))
     
     #live trades
-    trades = get_trades('https://796.com/apiV2/trade/100.html?op=futures',params)
+    trades = get_trades(trade,get_query_parameters(trade))
     publish('trades',get_string_data(trades))
     
     #save trades to DB
     save_trades(trades)
+    
+    
+@task()
+def polling_market_data():
+    markets = get_markets()
+    for market in markets:
+        polling(market)
+        
+if __name__ == '__main__':
+    polling_market_data()

@@ -20,6 +20,9 @@ from api.data_analysis import MA,MACD
 def test(request):
     return render_to_response('bitcoin1.html', locals())
 
+def index(request):
+    return render_to_response('index.html', locals())
+
 def market(request):
     alert = Alert.objects.distinct()
     print alert.values()[0]['high']

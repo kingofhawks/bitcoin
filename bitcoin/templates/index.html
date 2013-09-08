@@ -24,6 +24,11 @@ var refresh_markets = function(){
   		//console.log(data);
   		var source   = $("#live_trades").html();
         //console.log(source);
+        Handlebars.registerHelper('market_name', function() {  	      
+			  return new Handlebars.SafeString(	
+					  '<a  href="http://localhost:8000/market/'+this.name+'">'+this.name+'</a>'					 
+			  );
+		 });
         var template = Handlebars.compile(source);
         //var context = {current: "11111"}
         var html    = template(data);
@@ -54,6 +59,7 @@ $(function() {
         
 	
     refresh_markets();
+
   	
 });
 </script>
@@ -71,7 +77,7 @@ $(function() {
     <tbody>
       {{#each []}}
         <tr>
-          <td>{{this.name}}</td>
+          <td>{{market_name}}</td>
           <td>{{this.last}}</td>
           <td>{{this.high}}</td>
 		  <td>{{this.low}}</td>

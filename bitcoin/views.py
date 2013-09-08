@@ -28,11 +28,11 @@ def index(request):
     print request.LANGUAGE_CODE
     return render_to_response('index.html', locals())
 
-def market(request):
+def market(request,name):
     alert = Alert.objects.distinct()
     print alert.values()[0]['high']
     
-    return render(request,'market.html', {'alert':alert.values()[0]})
+    return render(request,'market.html', {'alert':alert.values()[0],'market':name})
 
 def bitcoin(request):
     return render_to_response('bitcoin.html', locals())

@@ -17,7 +17,11 @@ urlpatterns = patterns('',
     url(r'^update_alert/$', views.update_alert),
     url(r'^ohlc/$', views.ohlc),
     url(r'^index/$', views.index),
-    url(r'^markets/$', views.markets),    
+    url(r'^markets/$', views.markets),   
+    url(r'^register/$', views.register), 
+    url(r'^register_submit/$', views.register_submit), 
+    url(r'^login/$', views.login),
+    url(r'^logout/$', views.logout),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

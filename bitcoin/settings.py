@@ -189,7 +189,7 @@ CELERYBEAT_SCHEDULE = {
     'polling-market-data': {
         'task': 'api.tasks.polling_market_data',
         #'schedule': crontab(minute='*/1'),
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=30),#default set to 10 seconds
         'args': (),
     },
 }

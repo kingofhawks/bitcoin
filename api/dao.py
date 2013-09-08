@@ -4,7 +4,7 @@ Created on 2013-9-7
 @author: Simon
 '''
 import json
-from api.models import Ticker
+from api.models import Ticker,Account
 
 def init_ticker_table():
     with open('markets.json') as data_file:    
@@ -20,6 +20,13 @@ def init_ticker_table():
     
 def get_markets():
     return Ticker.objects.order_by('name')
+
+def save_account(account):
+    account.save()
+    
+def get_account(username,password):
+    account = Account.objects.filter(username=username,password = password)
+    return account
         
 if __name__ == "__main__":     
     #init_ticker_table()
@@ -29,3 +36,4 @@ if __name__ == "__main__":
     query_dict = dict(parse_qsl(o.query))
     #d = dict(o.query)
     print query_dict
+    print get_account('a','b')

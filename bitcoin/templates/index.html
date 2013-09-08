@@ -22,7 +22,7 @@
 var refresh_markets = function(){
 	$.getJSON('/markets/', function(data) {
   		//console.log(data);
-  		var source   = $("#live_trades").html();
+  		var source   = $("#marketsTemplate").html();
         //console.log(source);
         Handlebars.registerHelper('market_name', function() {  	      
 			  return new Handlebars.SafeString(	
@@ -33,7 +33,7 @@ var refresh_markets = function(){
         //var context = {current: "11111"}
         var html    = template(data);
         //console.log(html);
-    	$('#trades').html(html);
+    	$('#markets').html(html);
   	});
 }
 
@@ -64,7 +64,7 @@ $(function() {
 });
 </script>
 
-<script id="live_trades" type="text/x-handlebars-template">
+<script id="marketsTemplate" type="text/x-handlebars-template">
 {% verbatim %}
   <table class="table">
     <thead>
@@ -91,19 +91,24 @@ $(function() {
 </head>
 <body>
   <div id="basic" class="container2">
-  {% verbatim %}
   	<div id="summary" class="item w4 h2">  
-  	比特币市场实时行情			
-  	<input type='text' id="ma3" placeholder="用户名"/>
-  	<input type='text' id="ma3" placeholder="密码"/>	
-  	<button id="login" type="button" class="btn btn-primary" data-toggle="button">登录</button>
-  	<a id="register" href="#">立即注册</a>
-  	<a id="register" href="#">中文</a>
-  	<a id="register" href="#">英文</a>
-  	</div>
-  	{% endverbatim %} 	 	        
+  		{% if username %}
+  		<div>{{ username }},您已经登录成功，<a href="/logout/">Logout</a></div>
+  		{% else %}
+	  	<form method="POST" action="/login/">
+		  	比特币市场实时行情	
+		  	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  	<input type='text' name="username" placeholder="用户名" style="width:200px"/>
+		  	<input type='text' name="password" placeholder="密码" style="width:200px"/>	
+		  	<button id="login" type="submit" class="btn btn-primary">登录</button>
+		  	<a id="register" href="/register/">立即注册</a>
+		  	<a id="register" href="#">中文</a>
+		  	<a id="register" href="#">英文</a>
+	  	</form>
+	  	{% endif %}
+  	</div>	        
     	
-    <div id="trades" class="item w4 h6">最新成交记录</div>
+    <div id="markets" class="item w4 h6"/>
 </div>
 
 </body>

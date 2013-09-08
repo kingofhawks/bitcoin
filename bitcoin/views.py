@@ -16,7 +16,9 @@ from api.collector import get_trades,get_string_data
 from pandas import *
 from api.data_analysis import MA,MACD
 from django.utils.translation import ugettext as _
-from api.dao import get_markets
+from api.dao import get_markets,save_account,get_account
+from api.models import Account
+
 #import json
     
 def test(request):
@@ -26,6 +28,46 @@ def index(request):
     output = _("index_title")
     print output
     print request.LANGUAGE_CODE
+    #print request.session['username']
+    
+    if 'username' not in request.session:
+        return render_to_response('index.html', locals())
+    else:        
+        return render(request,'index.html', {'username':request.session['username']})
+
+def register(request):
+    return render_to_response('register.html', locals())
+
+@csrf_exempt
+def register_submit(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    email = request.POST.get('email')                       
+    qq = request.POST.get('qq') 
+    print '%s,%s,%s,%s',(username,password,email,qq)                                             
+    account = Account()
+    account.username = username
+    account.password = password
+    account.mail = email
+    account.QQ = qq
+    save_account(account)
+    
+    return render_to_response('index.html', locals())
+
+@csrf_exempt
+def login(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')                                          
+    account = get_account(username,password)
+#    print 'login ***************************'
+#    print request.session['username']
+#    print account
+    
+    request.session['username'] = username
+    return render_to_response('index.html', locals())
+
+def logout(request):
+    del request.session['username'] 
     return render_to_response('index.html', locals())
 
 def market(request,name):

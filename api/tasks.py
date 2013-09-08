@@ -35,14 +35,20 @@ def polling(market):
     asks = orders[1]
 
     #live asks
+    #asks['market'] = name
     publish('asks',get_string_data(get_accumulated_volume(asks)))
     
     #live bids
+    #bids['market'] = name
     publish('bids',get_string_data(get_accumulated_volume(bids)))
     
     #live trades
     trades = get_trades(trade,get_query_parameters(trade))
-    publish('trades',get_string_data(trades))
+    #trades['market'] = name
+    #publish('trades',get_string_data(trades))
+    live_trades = get_string_data({"market":name,"data":get_string_data(trades)})
+    print live_trades
+    publish('trades',live_trades)
     
     #save trades to DB
     save_trades(trades)

@@ -22,6 +22,7 @@
   <script type="text/javascript" src="{% static "js/moment.min.js" %}"></script>
   
 <script type="text/javascript">
+//console.log('{{market}}')
 var show_chart = function(time_period){
 	$.getJSON('/ohlc/',{ period: time_period}, function(data) {
 		//console.log(data);
@@ -466,7 +467,6 @@ $(function() {
 	//audio.get(0).play();
 	//audio.trigger('play'); also works!
 	//http://www.uscis.gov/files/nativedocuments/Track%2093.mp3
-	//../static/Kalimba.mp3
     var audioElement = document.createElement('audio');
     audioElement.setAttribute('src', 'http://www.uscis.gov/files/nativedocuments/Track%2093.mp3');
     //audioElement.setAttribute('autoplay', 'autoplay'); must enable autoplay to play immediately!
@@ -491,63 +491,65 @@ $(function() {
     //websocket part!
     var socket = io.connect('http://localhost:80');
     socket.on('news', function (data) {
-      console.log("new received*****************");
-      //console.log(data);
-      //console.log(_.isObject(data));
+      var livePrice = JSON.parse(data);
+      console.log(livePrice);
+      console.log(livePrice.market);
+      console.log(livePrice.market+" live price received*****************");
       
       if (!_.isObject(data) && typeof data.replace === 'function'){
-    	  //replace ' with "          
-	      //var b = data.replace(/'/g, '"');
-	      //console.log(b);
-	      //jQuery.parseJSON('{"name":"John"}');
 	      var livePrice = JSON.parse(data);
-	      //console.log(livePrice);
+	      console.log(livePrice);
+	      console.log(livePrice.market);
 	      //console.log(obj.sell);
 	      //console.log({{alert.high}});
 	      //console.log({{alert.low}});
-	      if (livePrice.last>={{alert.high}} || livePrice.last<={{alert.low}}){
-	    	  console.log('raise alert**************');
-	    	  //trigger sound
-	    	  var audio = $('#audio');
-	    	  //audio.get(0).play(); also works
-	    	  audio.trigger('play');
-	      }
-	      var source   = $("#live_price").html();
-	      //console.log(source);
-	      var template = Handlebars.compile(source);
-	      //var context = {current: "11111"}
-	      var html    = template(livePrice);
-	     // console.log(html);
-	  	  $('#summary').html(html);	  	
-    }      
-      //socket.emit('my other event', { my: 'data' });
+	      //var market = livePrice.
+	      if (livePrice.market == '{{market}}'){
+		      if (livePrice.last>={{alert.high}} || livePrice.last<={{alert.low}}){
+		    	  console.log('raise alert**************');
+		    	  //trigger sound
+		    	  var audio = $('#audio');
+		    	  //audio.get(0).play(); also works
+		    	  audio.trigger('play');
+		      }
+		      var source   = $("#live_price").html();
+		      //console.log(source);
+		      var template = Handlebars.compile(source);
+		      //var context = {current: "11111"}
+		      var html    = template(livePrice);
+		     // console.log(html);
+		  	  $('#summary').html(html);	
+	      }  	
+    	}      
+      
   	  }); 
     
     socket.on('trades', function (data) {
-    	console.log("trades received*****************");
-        //console.log(data);
-        //console.log(_.isObject(data));
-        
-        if (!_.isObject(data) && typeof data.replace === 'function'){
-      	  //replace ' with "          
-  	      //var b = data.replace(/'/g, '"');
-  	      //console.log(b);
-  	      //jQuery.parseJSON('{"name":"John"}');
-  	      var liveTrades = JSON.parse(data);
-  	      //console.log(liveTrades);
-  	      //console.log(obj.sell);
-  	      var source   = $("#live_trades").html();
-  	      //console.log(source);
-  	      Handlebars.registerHelper('timestamp', function() {  	      
-			  return new Handlebars.SafeString(					  
-					  moment.unix(this.time).format('YYYY-M-D, h:mm:ss a')
-			  );
-		 });
-  	      var template = Handlebars.compile(source);
-  	      //var context = {current: "11111"}
-  	      var html    = template(liveTrades);
-  	      //console.log(html);
-  	  	  $('#trades').html(html);
+    	//console.log(data);
+      	var liveTrades = JSON.parse(data);    
+    	console.log(liveTrades.market+" trades received*****************");
+	    console.log('{{market}}');
+  	    //console.log(liveTrades.data);
+        //console.log(liveTrades.market == '{{market}}');
+        if (!_.isObject(data) && typeof data.replace === 'function'){ 	      
+  	      if (liveTrades.market == '{{market}}'){
+  	  	      var source   = $("#live_trades").html();
+  	  	      //console.log(source);
+  	  	      Handlebars.registerHelper('timestamp', function() {  	      
+  				  return new Handlebars.SafeString(					  
+  						  moment.unix(this.time).format('YYYY-M-D, h:mm:ss a')
+  				  );
+  			 });
+  	  	      var template = Handlebars.compile(source);
+  	  	      var context = [{"price": "0.1154", "type": "buy", "amount": "10", "time": 1378606847}]
+  	  	      
+  	  	      var html    = template(JSON.parse(liveTrades.data));
+  	  	  //var html    = template(context);
+  	  	      //console.log(liveTrades.data);
+  	  	      //console.log(_.isArray(liveTrades.data))
+  	  	      //console.log(html);
+  	  	  	  $('#trades').html(html); 
+  	      }
       }             
     }); 
     
@@ -564,13 +566,15 @@ $(function() {
   	      var liveAsks = JSON.parse(data);
   	      //console.log(liveAsks);
   	      //console.log(obj.sell);
-  	      var source   = $("#asksTemplate").html();
-  	      //console.log(source);
-  	      var template = Handlebars.compile(source);
-  	      //var context = {current: "11111"}
-  	      var html    = template(liveAsks);
-  	      //console.log(html);
-  	  	  $('#asks').html(html);
+  	      if (liveAsks.market == '{{market}}'){
+  	  	      var source   = $("#asksTemplate").html();
+  	  	      //console.log(source);
+  	  	      var template = Handlebars.compile(source);
+  	  	      //var context = {current: "11111"}
+  	  	      var html    = template(liveAsks);
+  	  	      //console.log(html);
+  	  	  	  $('#asks').html(html);
+  	      }
       }             
     }); 
     
@@ -586,15 +590,17 @@ $(function() {
   	      //console.log(b);
   	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveBids = JSON.parse(data);
-  	      //console.log(liveBids);
-  	      //console.log(obj.sell);
-  	      var source   = $("#bidsTemplate").html();
-  	      //console.log(source);
-  	      var template = Handlebars.compile(source);
-  	      //var context = {current: "11111"}
-  	      var html    = template(liveBids);
-  	      //console.log(html);
-  	  	  $('#bids').html(html);
+	  	  if (liveBids.market == '{{market}}'){
+	  	      //console.log(liveBids);
+	  	      //console.log(obj.sell);
+	  	      var source   = $("#bidsTemplate").html();
+	  	      //console.log(source);
+	  	      var template = Handlebars.compile(source);
+	  	      //var context = {current: "11111"}
+	  	      var html    = template(liveBids);
+	  	      //console.log(html);
+	  	  	  $('#bids').html(html);
+	  	  }
       }             
     }); 
     
@@ -635,7 +641,7 @@ $(function() {
 </script>
 <script id="live_trades" type="text/x-handlebars-template">
 {% verbatim %}
-  <table id="trades" class="table">
+  <table class="table">
     <thead>
       <th>时间</th>
       <th>价格</th>

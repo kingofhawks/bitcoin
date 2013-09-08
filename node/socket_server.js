@@ -7,7 +7,7 @@ app.listen(80);
 var redis = require('socket.io/node_modules/redis');
 var sub = redis.createClient(6379,'192.168.192.128');
 
-//Subscribe to the Redis chat channel
+//Subscribe to the Redis channel for real time bitcoin data update
 sub.subscribe('chat');
 sub.subscribe('trades');
 sub.subscribe('asks');
@@ -31,8 +31,7 @@ io.sockets.on('connection', function (socket) {
     sub.on('message', function(channel, message){
 		console.log(channel+' received redis message');
 		//console.log(message);
-        //socket.send(message);
-		//io.sockets.emit('news', { hello: 'world' });
+        //socket.send(message);		
 		if (channel =='chat'){
 			io.sockets.emit('news', message);
 		} else if (channel=='trades'){
@@ -43,10 +42,4 @@ io.sockets.on('connection', function (socket) {
 		    io.sockets.emit('bids', message);
 		}		
     });
-	
-  //socket.emit('news', { hello: 'world' }); send to the client
-  io.sockets.emit('news', { hello: 'world' }); //send to all clients
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
 });

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap-theme.css" %}" />
   <link rel='stylesheet' href="{% static "css/spectrum.css" %}"/>
   
-  <script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>  
+  <script type="text/javascript" src="{% static "js/jquery-2.0.3.min.js" %}"></script>
   <script src="http://localhost/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="{% static "js/masonry.pkgd.min.js" %}"></script>
   <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
@@ -492,18 +492,12 @@ $(function() {
     var socket = io.connect('http://localhost:80');
     socket.on('news', function (data) {
       var livePrice = JSON.parse(data);
-      console.log(livePrice);
-      console.log(livePrice.market);
+      //console.log(livePrice);
       console.log(livePrice.market+" live price received*****************");
       
       if (!_.isObject(data) && typeof data.replace === 'function'){
 	      var livePrice = JSON.parse(data);
-	      console.log(livePrice);
-	      console.log(livePrice.market);
-	      //console.log(obj.sell);
-	      //console.log({{alert.high}});
-	      //console.log({{alert.low}});
-	      //var market = livePrice.
+
 	      if (livePrice.market == '{{market}}'){
 		      if (livePrice.last>={{alert.high}} || livePrice.last<={{alert.low}}){
 		    	  console.log('raise alert**************');
@@ -528,7 +522,7 @@ $(function() {
     	//console.log(data);
       	var liveTrades = JSON.parse(data);    
     	console.log(liveTrades.market+" trades received*****************");
-	    console.log('{{market}}');
+	    //console.log('{{market}}');
   	    //console.log(liveTrades.data);
         //console.log(liveTrades.market == '{{market}}');
         if (!_.isObject(data) && typeof data.replace === 'function'){ 	      
@@ -565,13 +559,14 @@ $(function() {
   	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveAsks = JSON.parse(data);
   	      //console.log(liveAsks);
+  	      //console.log(liveAsks.market == '{{market}}');
   	      //console.log(obj.sell);
   	      if (liveAsks.market == '{{market}}'){
   	  	      var source   = $("#asksTemplate").html();
   	  	      //console.log(source);
   	  	      var template = Handlebars.compile(source);
   	  	      //var context = {current: "11111"}
-  	  	      var html    = template(liveAsks);
+  	  	      var html    = template(JSON.parse(liveAsks.data));
   	  	      //console.log(html);
   	  	  	  $('#asks').html(html);
   	      }
@@ -597,7 +592,7 @@ $(function() {
 	  	      //console.log(source);
 	  	      var template = Handlebars.compile(source);
 	  	      //var context = {current: "11111"}
-	  	      var html    = template(liveBids);
+	  	      var html    = template(JSON.parse(liveBids.data));
 	  	      //console.log(html);
 	  	  	  $('#bids').html(html);
 	  	  }

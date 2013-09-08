@@ -10,7 +10,7 @@ from collector import get_string_data,get_trades
 
 #Moving Average
 def MA(df, n):
-    MA = Series(rolling_mean(df['close'], n,min_periods=2), name = 'MA_' + str(n))
+    MA = Series(rolling_mean(df['close'], n,min_periods=1), name = 'MA_' + str(n))
     df = df.join(MA)
     return df
 

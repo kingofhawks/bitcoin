@@ -600,14 +600,17 @@ $(function() {
     }); 
     
     
-    //console.log({{alert.high}});
+    //Change Alert Setting
     $('#high').val({{alert.high}});
-    $('#low').val({{alert.low}});
+    $('#low').val({{alert.low}});    
+    var update_alert = function(){
+    	$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val(),market:'{{market}}' });
+    }
 	$("#high").focusout(function() {
-		$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
+		update_alert();
 	})
 	$("#low").focusout(function() {
-		$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
+		update_alert();
 	})
     
     //Change time period

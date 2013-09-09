@@ -16,7 +16,7 @@ from api.collector import get_trades,get_string_data
 from pandas import *
 from api.data_analysis import MA,MACD
 from django.utils.translation import ugettext as _
-from api.dao import get_markets,save_account,get_account,get_account_by_email
+from api.dao import get_markets,save_account,get_account,get_account_by_email,update_alerts,get_alert
 from api.models import Account
 
 #import json
@@ -116,12 +116,16 @@ def get_password(request):
     return HttpResponse(json.dumps(data), mimetype="application/json")
 
 def market(request,name):
-    alert = Alert.objects.distinct()
+    username = request.session['username']
+    alert = get_alert(username,name)
     #print alert.values()[0]['high']
     
     if (len(alert) == 1):
         return render(request,'market.html', {'alert':alert.values()[0],'market':name})
     else:
+        #Initialize one alert per username/market
+        alert = Alert(high = 0,low = 0,username = username,market = name)
+        alert.save()
         return render(request,'market.html', {'alert':{'high':0,'low':0},'market':name})
 
 def bitcoin(request):
@@ -132,16 +136,18 @@ def dropdown(request):
 
 @csrf_exempt
 def update_alert(request):
-    print request.POST.get('high')
-    print request.POST.get('low')
-    alert = Alert(high = request.POST.get('high'),low = request.POST.get('low'),id = 1)
-    alert.save()
+    high = request.POST.get('high')
+    low = request.POST.get('low')
+    market = request.POST.get('market')
+    username = request.session['username']
+
+    update_alerts(username,market,high,low)
     return HttpResponse("OK")
 
-def get_alert(request):
-    alert = Alert.objects.distinct()
-    print alert.values()[0]['high']
-    return 
+#def get_alert(request):
+#    alert = Alert.objects.distinct()
+#    print alert.values()[0]['high']
+#    return 
 
 def markets(request):
     markets = get_markets()

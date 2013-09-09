@@ -5,7 +5,7 @@
   {% load staticfiles %}
   {% load i18n %}
   
-  <title>{% trans "index_title" %}</title>
+  <title>{% trans "比特币市场实时行情" %}</title>
   <link rel="stylesheet" href="../static/css/bitcoin.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap-theme.css" />
@@ -95,17 +95,16 @@ $(function() {
   		<div>{{ username }},您已经登录成功，<a href="/logout/">Logout</a></div>
   		{% else %}
 	  	<form method="POST" action="/login/">
-		  	比特币市场实时行情	
-		  	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		  	<input type='text' name="username" placeholder="用户名" style="width:200px"/>
-		  	<input type='text' name="password" placeholder="密码" style="width:200px"/>	
+	  		<a id="register" href="#">中文</a>
+		  	<a id="register" href="#">英文</a>
+		  	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  	<input type='text' name="username" placeholder="用户名" style="width:150px"/>
+		  	<input type='text' name="password" placeholder="密码" style="width:150px"/>	
 		  	{% if error %}		  
 		  		<a id="register" href="/forget_password/">忘记密码?</a>
 		  	{% endif %}
 		  	<button id="login" type="submit" class="btn btn-primary">登录</button>
-		  	<a id="register" href="/register/">立即注册</a>
-		  	<a id="register" href="#">中文</a>
-		  	<a id="register" href="#">英文</a>
+		  	<a id="register" href="/register/">立即注册</a>		  	
 	  	</form>
 	  	{% endif %}
   	</div>	        

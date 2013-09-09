@@ -28,7 +28,9 @@ class Depth(models.Model):
     
 class Alert(models.Model):
     high = models.DecimalField(max_digits=10, decimal_places=2)
-    low = models.DecimalField(max_digits=10, decimal_places=2)   
+    low = models.DecimalField(max_digits=10, decimal_places=2) 
+    username = models.CharField(max_length=32)
+    market = models.CharField(max_length=32)  
     
 class Account(models.Model):
     username = models.CharField(max_length=32)

@@ -81,17 +81,17 @@ var show_chart = function(time_period){
 			
 			macd.push([
 				json[i].time, // the date
-				json[i].MACD_12_26 // the volume
+				json[i].MACD_12_26 // MACD
 			]);
 			
 			dea.push([
 				json[i].time, // the date
-				json[i].MACDsign_12_26 // the volume
+				json[i].MACDsign_12_26 // MACD DEA
 			]);
 			
 			dif.push([
 				json[i].time, // the date
-				json[i].MACDdiff_12_26 // the volume
+				json[i].MACDdiff_12_26 // MACD DIF
 			]);
 		}
 
@@ -603,9 +603,12 @@ $(function() {
     //console.log({{alert.high}});
     $('#high').val({{alert.high}});
     $('#low').val({{alert.low}});
-    $('#alertButton').click(function() {
-    	$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
-    });
+	$("#high").focusout(function() {
+		$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
+	})
+	$("#low").focusout(function() {
+		$.post("/update_alert/", { high: $('#high').val(),low: $('#low').val() });
+	})
     
     //Change time period
     $('#m1').click(function(){
@@ -627,6 +630,10 @@ $(function() {
 	$('#w1').click(function(){
 		show_chart('W');
     });
+	
+	$("#ma1").focusout(function() {
+		console.log($(this).val());
+	})
 });
 </script>
 <script id="live_price" type="text/x-handlebars-template">
@@ -772,7 +779,7 @@ $(function() {
                <input type='text' id="ma4" style="width:20px" maxlength="3" value="30"/>
                </td>
                <td>
-                <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+                <button id="maDefault" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
               </td>
               <tr>
               <tr>
@@ -780,16 +787,16 @@ $(function() {
               MACD:
               </td>
               <td>
-               <input type='text' id="ma1" style="width:20px" maxlength="3" value="12"/>
+               <input type='text' id="short" style="width:20px" maxlength="3" value="12"/>
                </td>
                <td>
-               <input type='text' id="ma2" style="width:20px" maxlength="3" value="26"/>
+               <input type='text' id="long" style="width:20px" maxlength="3" value="26"/>
                </td>
                <td>
-               <input type='text' id="ma3" style="width:20px" maxlength="3" value="9"/>
+               <input type='text' id="mid" style="width:20px" maxlength="3" value="9"/>
                </td>
                <td>               
-              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              <button id="macdDefault" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
               </td>
               </tr>
               <tr>
@@ -797,16 +804,16 @@ $(function() {
               KDJ:
               </td>
               <td>
-               <input type='text' id="ma1" style="width:20px" maxlength="3" value="9"/>
+               <input type='text' id="n" style="width:20px" maxlength="3" value="9"/>
                </td>
                <td>
-               <input type='text' id="ma2" style="width:20px" maxlength="3" value="3"/>
+               <input type='text' id="m1" style="width:20px" maxlength="3" value="3"/>
                </td>
                <td>
-               <input type='text' id="ma3" style="width:20px" maxlength="3" value="3"/>
+               <input type='text' id="m2" style="width:20px" maxlength="3" value="3"/>
                </td>
                <td>               
-              <button id="showMa" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
+              <button id="kdjDefault" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>
               </td>
               </tr>
               </table>                           
@@ -818,8 +825,7 @@ $(function() {
               High Price:
               <input id="high" style="margin-bottom: 15px;" type="text" size="30"/><br>
               Low Price:
-              <input id="low" style="margin-bottom: 15px;" type="text" size="30"/>
-              <button id="alertButton" type="button" class="btn btn-primary" data-toggle="button">Submit</button>             
+              <input id="low" style="margin-bottom: 15px;" type="text" size="30"/>                           
 			</div>
           </li>
 		</ul>

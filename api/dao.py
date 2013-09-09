@@ -27,6 +27,10 @@ def save_account(account):
 def get_account(username,password):
     account = Account.objects.filter(username=username,password = password)
     return account
+
+def get_account_by_email(email):
+    account = Account.objects.filter(mail=email)
+    return account
         
 if __name__ == "__main__":     
     #init_ticker_table()
@@ -37,3 +41,4 @@ if __name__ == "__main__":
     #d = dict(o.query)
     print query_dict
     print get_account('a','b')
+    print get_account_by_email('aa@z.cn')

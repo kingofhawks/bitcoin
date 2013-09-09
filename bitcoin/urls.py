@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^register_submit/$', views.register_submit), 
     url(r'^login/$', views.login),
     url(r'^logout/$', views.logout),
+    url(r'^forget_password/$', views.forget_password),
+    url(r'^get_password/$', views.get_password),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

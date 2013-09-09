@@ -16,7 +16,7 @@ from api.collector import get_trades,get_string_data
 from pandas import *
 from api.data_analysis import MA,MACD
 from django.utils.translation import ugettext as _
-from api.dao import get_markets,save_account,get_account
+from api.dao import get_markets,save_account,get_account,get_account_by_email
 from api.models import Account
 
 #import json
@@ -59,16 +59,61 @@ def login(request):
     username = request.POST.get('username')
     password = request.POST.get('password')                                          
     account = get_account(username,password)
-#    print 'login ***************************'
-#    print request.session['username']
-#    print account
     
-    request.session['username'] = username
-    return render_to_response('index.html', locals())
+    if len(account) == 1:
+        request.session['username'] = username  
+        return redirect('/index')  
+    else:        
+        return render_to_response('index.html', {'error':'test'})
+
 
 def logout(request):
-    del request.session['username'] 
-    return render_to_response('index.html', locals())
+    if 'username' in request.session:
+        del request.session['username'] 
+    return redirect('/index')
+
+
+def forget_password(request):
+    return render_to_response('forget_password.html', locals())
+
+@csrf_exempt
+def get_password(request):
+    email = request.POST.get('email')
+    account = get_account_by_email(email)
+    
+    data = {}
+    if len(account) == 0:
+        data['success'] = 'Fail'
+        data['message'] = 'Your email address is invalid!'        
+    else:
+        import smtplib
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        #login to gmail SMTP server with your account
+        import settings
+        server.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        
+        m = MIMEMultipart()       
+        m["subject"] = 'Bitcoin Password Reset Request'
+        #print account[0].password
+        body = "Your password is:"+str(account[0].password)
+            
+        #print body
+        try:
+            m.attach(MIMEText(body))
+            
+            #Send the mail      
+            server.sendmail("from@gmail.com", "to@qq.com", m.as_string())
+            data['success'] = 'OK'
+            data['message'] = 'Please check your email for your password.'
+        except:
+            data['success'] = 'Fail'
+            data['message'] = 'Password send to your email failed.'
+        
+                
+    return HttpResponse(json.dumps(data), mimetype="application/json")
 
 def market(request,name):
     alert = Alert.objects.distinct()

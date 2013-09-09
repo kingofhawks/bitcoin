@@ -193,3 +193,7 @@ CELERYBEAT_SCHEDULE = {
         'args': (),
     },
 }
+
+#SMTP setting with GMail server
+SMTP_USERNAME = 'username'
+SMTP_PASSWORD = 'password'

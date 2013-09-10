@@ -45,9 +45,11 @@ var show_chart = function(time_period){
 				break;
 			}
 			console.log(json[i])
-					
+			var time = moment(json[i].time, "YYYY-MM-DDTHH:mm:ss")._d.getTime();
+
 			ohlc.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].open, // open
 				json[i].high, // high
 				json[i].low, // low
@@ -55,46 +57,54 @@ var show_chart = function(time_period){
 			]);			
 			
 			ma5.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].MA_5 // MA
 			]);
 			
 			ma10.push([
-				json[i].time, // the date
+			    time,
+				//json[i].time, // the date
 				json[i].MA_10 // MA
 			]);
 			
 			ma20.push([
-				json[i].time, // the date
+			    time,
+				//json[i].time, // the date
 				json[i].MA_20 // MA
 			]);
 			
 			ma30.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].MA_30 // MA
 			]);
 						
 			volume.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].amount // the volume
 			]);
 			
 			macd.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].MACD_12_26 // MACD
 			]);
 			
 			dea.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].MACDsign_12_26 // MACD DEA
 			]);
 			
 			dif.push([
-				json[i].time, // the date
+				time,
+				//json[i].time, // the date
 				json[i].MACDdiff_12_26 // MACD DIF
 			]);
 		}
-
+		
 		// set the allowed units for data grouping
 		var groupingUnits = [[
 			'day',                         // unit name:day,week
@@ -109,8 +119,28 @@ var show_chart = function(time_period){
 			chart:{
 				backgroundColor:'#FCFFC5'
 			},
+			exporting: {
+	            enabled: false,
+	        },
 			tooltip: {
-		    	valueDecimals: 2,		    	
+		    	valueDecimals: 2,	
+		    	crosshairs: [true, true],
+		    	//positioner: function () {
+	            	//return { x: 50, y: 30 };
+	            //},
+	            //formatter: function() {
+	               // var s = '';
+	                //console.log(this.points);
+	               // $.each(this.points, function(i, point) {
+	                //    s +=  point.series.name +': '+
+	                  //      point.y +': '+
+	                    //    point.open +': '+
+	                      //  point.high +': '+
+	                        //point.low +'m';
+	                //});
+	                
+	                //return s;
+	            //},
 		    },
 			navigator: {
 				enabled: false
@@ -121,39 +151,13 @@ var show_chart = function(time_period){
 			},
 		    
 		    rangeSelector: {
-		    	buttons: [{
-		            type: 'minute',
-		            count: 1,
-		            text: '1min'
-		        }, {
-		            type: 'day',
-		            count: 1,
-		            text: '3d'
-		        }, {
-		            type: 'week',
-		            count: 1,
-		            text: '1w'
-		        }, {
-		            type: 'month',
-		            count: 1,
-		            text: '1m'
-		        }, {
-		            type: 'month',
-		            count: 6,
-		            text: '6m'
-		        }, {
-		            type: 'year',
-		            count: 1,
-		            text: '1y'
-		        }, {
-		            type: 'all',
-		            text: 'All'
-		        }],
-		        selected: 6
+		    	enabled: true,
+		    	
 		    },
 
 		    title: {
-		        text: 'Bitcoin Graph'
+		        text: 'Bitcoin Graph',
+		        margin: 30,
 		    },
 
 		    yAxis: [{
@@ -260,12 +264,14 @@ docReady( function() {
 	});
 	
 $(function() {
-	var jsonUrl = "{% static data.json%}"
-
-	//$.getJSON(jsonUrl+'data15.json', function(data) {
+	var jsonUrl = "{% static sample.json%}"
+	//$.getJSON(jsonUrl+'sample.json', function(data) {
+		
+	//$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-ohlcv.json&callback=?', function(data) {
 	$.getJSON('/ohlc/', function(data) {
 		//console.log(data);
 		var json = JSON.parse(data);
+		//var json = data;
 		//console.log(json);
 		// split the data set into ohlc and volume
 		var ohlc = [],
@@ -279,21 +285,30 @@ $(function() {
 				break;
 			}
 			//console.log(json[i])
-					
+			var time = moment(json[i].time, "YYYY-MM-DDTHH:mm:ss")._d.getTime();
 			ohlc.push([
-				json[i].time, // the date
+			    time,
+				//json[i].time, // the date
 				json[i].open, // open
 				json[i].high, // high
 				json[i].low, // low
 				json[i].close // close
-			]);					
+			]);	
+			
+			//ohlc.push([
+				//		data[i][0], // the date
+					//	data[i][1], // open
+						//data[i][2], // high
+						//data[i][3], // low
+						//data[i][4] // close
+					//]);
 			
 			
 		}
 
 		// set the allowed units for data grouping
 		var groupingUnits = [[
-			'day',                         // unit name:day,week
+			'week',                         // unit name:day,week
 			[1]                             // allowed multiples
 		], [
 			'month',
@@ -637,6 +652,14 @@ $(function() {
 	$("#ma1").focusout(function() {
 		console.log($(this).val());
 	})
+	
+	var oldDate = "2013-09-09T11:30:00";
+
+	var dateObj = moment(oldDate, "YYYY-MM-DDTHH:mm:ss").toDate();
+	console.log(dateObj);
+	console.log(dateObj.getTime());
+	console.log(moment("2013-09-09T11:30:00", "YYYY-MM-DDTHH:mm:ss")._d.getTime());
+	console.log(1267801431000)
 });
 </script>
 <script id="live_price" type="text/x-handlebars-template">

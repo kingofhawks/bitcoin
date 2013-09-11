@@ -20,6 +20,7 @@
   <script type="text/javascript" src="{% static "js/highstock.js" %}"></script>
   <script type="text/javascript" src="{% static "js/exporting.js" %}"></script>
   <script type="text/javascript" src="{% static "js/moment.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/numeral.min.js" %}"></script>
   
 <script type="text/javascript">
 //console.log('{{market}}')
@@ -126,22 +127,33 @@ var show_chart = function(time_period){
 			tooltip: {
 		    	valueDecimals: 2,	
 		    	crosshairs: [true, true],
-		    	//positioner: function () {
-	            	//return { x: 50, y: 30 };
-	            //},
-	            //formatter: function() {
-	               // var s = '';
-	                //console.log(this.points);
-	               // $.each(this.points, function(i, point) {
-	                //    s +=  point.series.name +': '+
-	                  //      point.y +': '+
-	                    //    point.open +': '+
-	                      //  point.high +': '+
-	                        //point.low +'m';
-	                //});
-	                
-	                //return s;
-	            //},
+		    	shared: true,
+		    	positioner: function () {
+	            	return { x: 50, y: 60 };
+	            },
+	            formatter: function() {
+	                var s = 'Date:'+moment(this.x).format("YYYY-MM-DD, h:mm a");
+	                //var s = '<b>'+ Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'</b>';
+	                //console.log(this.points.length);
+	                $.each(this.points, function(i, point) {
+	                	name = point.series.name
+	                	//console.log(point);
+	                	//console.log(point.series);
+	                	//var tmp = point.series.name +': '+point.y;
+	                	//console.log(tmp);
+	                	if (name == "Bitcoin"){
+	                		s += " O:"+point.point.open+" H:"+point.point.high+" L:"+point.point.low+" C:"+point.point.close	                		
+	                	} else if (name =="MACD" || name=="DEA" ||name=="DIF"){
+	                		
+	                	} else{
+	                		//Limit to 2 bits after .
+		                	var y = numeral(parseFloat(point.y)).format('0.00');	                	
+		                    s +=  name +': '+y
+	                	}
+	                });
+	                //console.log(s);
+	                return s;
+	            }
 		    },
 			navigator: {
 				enabled: false
@@ -158,7 +170,7 @@ var show_chart = function(time_period){
 
 		    title: {
 		        text: 'Bitcoin Graph',
-		        margin: 30,
+		        margin: 10,
 		    },
 
 		    yAxis: [{
@@ -349,31 +361,7 @@ $(function() {
             });
 	    },
 	});
-	
-	//var audio = $('#audio');
-	//audio.get(0).play();
-	//audio.trigger('play'); also works!
-	//http://www.uscis.gov/files/nativedocuments/Track%2093.mp3
-    var audioElement = document.createElement('audio');
-    audioElement.setAttribute('src', 'http://www.uscis.gov/files/nativedocuments/Track%2093.mp3');
-    //audioElement.setAttribute('autoplay', 'autoplay'); must enable autoplay to play immediately!
-    //audioElement.load()
-    $.get();
-    audioElement.addEventListener("load", function() {
-    audioElement.play();
-    }, true);
 
-
-
-
-    $('.play').click(function() {
-    audioElement.play();
-    });
-
-
-    $('.pause').click(function() {
-    audioElement.pause();
-    });
     
     //websocket part!
     var socket = io.connect('http://localhost:80');
@@ -422,13 +410,9 @@ $(function() {
   				  );
   			 });
   	  	      var template = Handlebars.compile(source);
-  	  	      var context = [{"price": "0.1154", "type": "buy", "amount": "10", "time": 1378606847}]
-  	  	      
+  	  	      //var context = [{"price": "0.1154", "type": "buy", "amount": "10", "time": 1378606847}]  	  	      
   	  	      var html    = template(JSON.parse(liveTrades.data));
-  	  	  //var html    = template(context);
-  	  	      //console.log(liveTrades.data);
-  	  	      //console.log(_.isArray(liveTrades.data))
-  	  	      //console.log(html);
+
   	  	  	  $('#trades').html(html); 
   	      }
       }             
@@ -440,14 +424,9 @@ $(function() {
         //console.log(_.isObject(data));
         
         if (!_.isObject(data) && typeof data.replace === 'function'){
-      	  //replace ' with "          
-  	      //var b = data.replace(/'/g, '"');
-  	      //console.log(b);
-  	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveAsks = JSON.parse(data);
   	      console.log(liveAsks);
   	      //console.log(liveAsks.market == '{{market}}');
-  	      //console.log(obj.sell);
   	      if (liveAsks.market == '{{market}}'){
   	  	      var source   = $("#asksTemplate").html();
   	  	      //console.log(source);
@@ -467,14 +446,9 @@ $(function() {
         //console.log(_.isObject(data));
         
         if (!_.isObject(data) && typeof data.replace === 'function'){
-      	  //replace ' with "          
-  	      //var b = data.replace(/'/g, '"');
-  	      //console.log(b);
-  	      //jQuery.parseJSON('{"name":"John"}');
   	      var liveBids = JSON.parse(data);
 	  	  if (liveBids.market == '{{market}}'){
 	  	      //console.log(liveBids);
-	  	      //console.log(obj.sell);
 	  	      var source   = $("#bidsTemplate").html();
 	  	      //console.log(source);
 	  	      var template = Handlebars.compile(source);

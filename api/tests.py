@@ -13,4 +13,6 @@ class SimpleTest(TestCase):
         """
         Tests that 1 + 1 always equals 2.
         """
+        import datetime
+        print(datetime.datetime.fromtimestamp(int("1368144000")).strftime('%Y-%m-%d %H:%M:%S'))
         self.assertEqual(1 + 1, 2)

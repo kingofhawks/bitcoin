@@ -21,6 +21,9 @@ def init_ticker_table():
 def get_markets():
     return Ticker.objects.order_by('name')
 
+def get_market_by_name(market):
+    return Ticker.objects.filter(name=market)
+
 def save_account(account):
     account.save()
     
@@ -51,3 +54,4 @@ if __name__ == "__main__":
     print get_account_by_email('aa@z.cn')
     print get_alert('simon','test')
     update_alerts('simon','test',0,0)
+    print get_market_by_name('796futures')

@@ -28,6 +28,31 @@ def MACD(df, n_fast, n_slow,span = 9):
     df = df.join(MACDdiff)
     return df
 
+#Relative Strength Index
+def RSI(df, n):
+    i = 0
+    UpI = [0]
+    DoI = [0]
+    while i + 1 <= df.index[-1]:
+        UpMove = df.get_value(i + 1, 'High') - df.get_value(i, 'High')
+        DoMove = df.get_value(i, 'Low') - df.get_value(i + 1, 'Low')
+        if UpMove > DoMove and UpMove > 0:
+            UpD = UpMove
+        else: UpD = 0
+        UpI.append(UpD)
+        if DoMove > UpMove and DoMove > 0:
+            DoD = DoMove
+        else: DoD = 0
+        DoI.append(DoD)
+        i = i + 1
+    UpI = Series(UpI)
+    DoI = Series(DoI)
+    PosDI = Series(ewma(UpI, span = n, min_periods = n - 1))
+    NegDI = Series(ewma(DoI, span = n, min_periods = n - 1))
+    RSI = Series(PosDI / (PosDI + NegDI), name = 'RSI_' + str(n))
+    df = df.join(RSI)
+    return df
+
 
 d = {'TIMESTAMP' : Series([1294311545, 1294317813, 1294318449]),
       'PRICE' : Series([24990, 25499, 25499]),

@@ -24,7 +24,7 @@
 <script type="text/javascript">
 //console.log('{{market}}')
 var show_chart = function(time_period){
-	$.getJSON('/ohlc/',{ period: time_period}, function(data) {
+	$.getJSON('/ohlc/',{ period: time_period,market:'{{market}}'}, function(data) {
 		//console.log(data);
 		var json = JSON.parse(data);
 		//console.log(json);
@@ -186,7 +186,7 @@ var show_chart = function(time_period){
 		    
 		    series: [{
 		        type: 'candlestick',
-		        name: 'AAPL',
+		        name: 'Bitcoin',
 		        data: ohlc,
 		        dataGrouping: {
 					units: groupingUnits

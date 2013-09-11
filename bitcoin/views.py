@@ -209,17 +209,33 @@ def ohlc(request):
     
     #MA indicator
     ma1 = request.GET.get('ma1')
-    #print ma1;
+    print ma1;
     if ma1 is None:
         ma1 = 5
+        
+    ma2 = request.GET.get('ma2')
+    #print ma1;
+    if ma2 is None:
+        ma2 = 10
+        
+    ma3 = request.GET.get('ma3')
+    #print ma1;
+    if ma3 is None:
+        ma3 = 20
+        
+    ma4 = request.GET.get('ma4')
+    #print ma1;
+    if ma4 is None:
+        ma4 = 30
 
-    result = MA(result,ma1)
-    result = MA(result,10)
-    result = MA(result,20)
-    result = MA(result,30)
+    result = MA(result,int(ma1),'MA_5')
+    result = MA(result,int(ma2),'MA_10')
+    result = MA(result,int(ma3),'MA_20')
+    result = MA(result,int(ma4),'MA_30')
     
     #MACD indicator
     result = MACD(result,12,26,9)
+    print '%d*****************',len(result.index)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     #print js

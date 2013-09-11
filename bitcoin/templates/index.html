@@ -26,7 +26,7 @@ var refresh_markets = function(){
         //console.log(source);
         Handlebars.registerHelper('market_name', function() {  	      
 			  return new Handlebars.SafeString(	
-					  '<a  href="http://localhost:8000/market/'+this.name+'">'+this.name+'</a>'					 
+					  '<a  target="_blank" href="http://localhost:8000/market/'+this.name+'" >'+this.name+'</a>'					 
 			  );
 		 });
         var template = Handlebars.compile(source);

@@ -234,7 +234,19 @@ def ohlc(request):
     result = MA(result,int(ma4),'MA_30')
     
     #MACD indicator
-    result = MACD(result,12,26,9)
+    short = request.GET.get('short')
+    #print ma1;
+    if short is None:
+        short = 12
+    long2 = request.GET.get('long')
+    #print ma1;
+    if long2 is None:
+        long2 = 26
+    mid = request.GET.get('mid')
+    #print ma1;
+    if mid is None:
+        mid = 9
+    result = MACD(result,int(short),int(long2),int(mid))
     print '%d*****************',len(result.index)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')

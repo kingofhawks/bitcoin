@@ -26,7 +26,8 @@
 //console.log('{{market}}')
 var show_chart = function(time_period){
 	$.getJSON('/ohlc/',{ period: time_period,market:'{{market}}',
-		ma1:$('#ma1').val(),ma2:$('#ma2').val(),ma3:$('#ma3').val(),ma4:$('#ma4').val()}, function(data) {
+		ma1:$('#ma1').val(),ma2:$('#ma2').val(),ma3:$('#ma3').val(),ma4:$('#ma4').val(),
+		'short':$('#short').val(),'long':$('#long').val(),mid:$('#mid').val()}, function(data) {
 		//console.log(data);
 		var json = JSON.parse(data);
 		//console.log(json);
@@ -341,7 +342,15 @@ $(function() {
         _.each(series, function(item){
         	if (_.isString(item.name) && !item.visible){
         		if (item.name.indexOf("MACD")!=-1 ||item.name.indexOf("DEA")!=-1 ||item.name.indexOf("DIF")!=-1){        			
-                		item.show();                
+                		item.show();     
+                		chart.yAxis[2].update({
+                            labels: {
+                                enabled: true
+                            },
+                            title: {
+                                text: 'Indicator'
+                            }
+                        });
         		}        	
         		
         	}        	
@@ -497,7 +506,10 @@ $(function() {
 
 	
 	$(".ma").focusout(function() {
-		//console.log($(this).val());
+		show_chart('15Min');
+	})
+	
+	$(".macd").focusout(function() {
 		show_chart('15Min');
 	})
 	
@@ -507,6 +519,14 @@ $(function() {
 		$('#ma2').val(10);
 		$('#ma3').val(20);
 		$('#ma4').val(30);
+		show_chart('15Min');
+	})
+	
+	$("#macdDefault").click(function() {
+		//console.log($(this).val());
+		$('#short').val(12);
+		$('#long').val(26);
+		$('#mid').val(9);
 		show_chart('15Min');
 	})
 });
@@ -662,13 +682,13 @@ $(function() {
               MACD:
               </td>
               <td>
-               <input type='text' id="short" style="width:20px" maxlength="3" value="12"/>
+               <input type='text' id="short" class="ma" style="width:20px" maxlength="3" value="12"/>
                </td>
                <td>
-               <input type='text' id="long" style="width:20px" maxlength="3" value="26"/>
+               <input type='text' id="long" class="ma" style="width:20px" maxlength="3" value="26"/>
                </td>
                <td>
-               <input type='text' id="mid" style="width:20px" maxlength="3" value="9"/>
+               <input type='text' id="mid" class="ma" style="width:20px" maxlength="3" value="9"/>
                </td>
                <td>               
               <button id="macdDefault" type="button" class="btn btn-primary" data-toggle="button">Default</button><br>

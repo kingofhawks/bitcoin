@@ -176,12 +176,12 @@ var show_chart = function(time_period){
 		        lineWidth: 2
 		    },{		  
 				title: {
-					text: 'MACD'
+					text: 'Indicator'
 				},
 		        top: 400,			
 		        height: 50,
 		        offset: 0,
-		        lineWidth: 2
+		        lineWidth: 2,
 		    }],
 		    
 		    series: [{
@@ -464,6 +464,40 @@ $(function() {
        });		
 	})
 	
+	$('#hideIndicator').click(function(){
+		var chart = $('#chart').highcharts();
+        var	series = chart.series;
+        _.each(series, function(item){
+        	if (_.isString(item.name) && item.visible){
+        		if (item.name.indexOf("MACD")!=-1 ||item.name.indexOf("DEA")!=-1 ||item.name.indexOf("DIF")!=-1){        			
+                		item.hide();                
+        		}        	
+        		
+        	}        	
+       });
+        chart.yAxis[2].update({
+            labels: {
+                enabled: false
+            },
+            title: {
+                text: null
+            }
+        });
+    });
+	
+	$('#showMacd').click(function(){
+		var chart = $('#chart').highcharts();
+        var	series = chart.series;
+        _.each(series, function(item){
+        	if (_.isString(item.name) && !item.visible){
+        		if (item.name.indexOf("MACD")!=-1 ||item.name.indexOf("DEA")!=-1 ||item.name.indexOf("DIF")!=-1){        			
+                		item.show();                
+        		}        	
+        		
+        	}        	
+       });
+    });
+	
 	$("#chartBackColor").spectrum({
 		preferredFormat: "hex",
 		showInput: true,
@@ -652,14 +686,6 @@ $(function() {
 	$("#ma1").focusout(function() {
 		console.log($(this).val());
 	})
-	
-	var oldDate = "2013-09-09T11:30:00";
-
-	var dateObj = moment(oldDate, "YYYY-MM-DDTHH:mm:ss").toDate();
-	console.log(dateObj);
-	console.log(dateObj.getTime());
-	console.log(moment("2013-09-09T11:30:00", "YYYY-MM-DDTHH:mm:ss")._d.getTime());
-	console.log(1267801431000)
 });
 </script>
 <script id="live_price" type="text/x-handlebars-template">
@@ -763,13 +789,13 @@ $(function() {
               Technical Indicator:
               </td>
               <td>
-              <button type="button" class="btn btn-primary" data-toggle="button">MACD</button>
+              <button id="showMacd" type="button" class="btn btn-primary" data-toggle="button">MACD</button>
               </td>
               <td>
               <button type="button" class="btn btn-primary" data-toggle="button">KDJ</button>
               </td>
               <td>
-              <button type="button" class="btn btn-primary" data-toggle="button">None</button><br>
+              <button id="hideIndicator" type="button" class="btn btn-primary" data-toggle="button">None</button><br>
               </td>
               <td>
               </tr>

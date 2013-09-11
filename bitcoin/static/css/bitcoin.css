@@ -16,18 +16,19 @@
   background: #09F;
 }
 
-.item.w2 { width: 180px; }
+.item.w2 { width: 230px; }
 .item.w3 { width: 180px; }
 .item.w4 { width: 100%; }
-.item.w5 { width: 1000px; }
-.item.w6 { width: 365px; }
+.item.w5 { width: 66%; }
+.item.w6 { width: 33.6%; }
 
 .item.h2 { height: 40px; }
 .item.h3 { height: 36px; }
 .item.h4 { height: 220px; }
 .item.h5 { height: 280px; }
-.item.h6 { height: 500px; }
+.item.h6 { height: 560px; }
 .item.h7 { height: 220px; }
+.item.h8 { height: 53%; }
 
 .stamp {
   background: red;

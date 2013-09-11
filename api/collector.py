@@ -44,7 +44,8 @@ def get_accumulated_volume(orders):
         previous = 0
         if (i>=1):
             previous = orders[i-1][2] 
-        order.append(float(str(order[1]))+float(previous))
+        amount = float(str(order[1]))+float(previous)
+        order.append("{0:.2f}".format(amount))
     return orders
 
 #save live trades into DB

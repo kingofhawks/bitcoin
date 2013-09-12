@@ -41,6 +41,9 @@ var show_chart = function(time_period){
 			macd = [],
 			dea = [],
 			dif = [],			
+			k = [],
+			d = [],
+			j = [],
 			dataLength = data.length;
 			
 		for (i = 0; i < dataLength; i++) {
@@ -89,6 +92,7 @@ var show_chart = function(time_period){
 				json[i].amount // the volume
 			]);
 			
+			//MACD indicator
 			macd.push([
 				time,
 				//json[i].time, // the date
@@ -105,6 +109,23 @@ var show_chart = function(time_period){
 				time,
 				//json[i].time, // the date
 				json[i].MACDdiff_12_26 // MACD DIF
+			]);
+			
+			
+			//KDJ indicator
+			k.push([
+				time,						
+				json[i].k // K
+			]);
+			
+			d.push([
+				time,						
+				json[i].d // D
+			]);
+			
+			j.push([
+				time,						
+				json[i].j // J
 			]);
 		}
 		
@@ -143,14 +164,14 @@ var show_chart = function(time_period){
 	                	//var tmp = point.series.name +': '+point.y;
 	                	//console.log(tmp);
 	                	if (name == "Bitcoin"){
-	                		s += " O:"+point.point.open+" H:"+point.point.high+" L:"+point.point.low+" C:"+point.point.close	                		
-	                	} else if (name =="MACD" || name=="DEA" ||name=="DIF"){
+	                		s += " Open:"+point.point.open+" High:"+point.point.high+" Low:"+point.point.low+" Close:"+point.point.close	                		
+	                	} //else if (name =="MACD" || name=="DEA" ||name=="DIF"){
 	                		
-	                	} else{
+	                	//} else{
 	                		//Limit to 2 bits after .
-		                	var y = numeral(parseFloat(point.y)).format('0.00');	                	
-		                    s +=  name +': '+y
-	                	}
+		                	//var y = numeral(parseFloat(point.y)).format('0.00');	                	
+		                    //s +=  name +': '+y
+	                	//}
 	                });
 	                //console.log(s);
 	                return s;
@@ -265,6 +286,30 @@ var show_chart = function(time_period){
 		        dataGrouping: {
 					units: groupingUnits
 		        }
+		    }, {
+		        type: 'line',
+		        name: 'K',
+		        data: k,
+		        yAxis: 2,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'line',
+		        name: 'D',
+		        data: d,
+		        yAxis: 2,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
+		    }, {
+		        type: 'line',
+		        name: 'J',
+		        data: j,
+		        yAxis: 2,
+		        dataGrouping: {
+					units: groupingUnits
+		        }
 		    }]
 		});
 	});
@@ -320,7 +365,8 @@ $(function() {
         var	series = chart.series;
         _.each(series, function(item){
         	if (_.isString(item.name) && item.visible){
-        		if (item.name.indexOf("MACD")!=-1 ||item.name.indexOf("DEA")!=-1 ||item.name.indexOf("DIF")!=-1){        			
+        		if (item.name.indexOf("MACD")!=-1 ||item.name.indexOf("DEA")!=-1 ||item.name.indexOf("DIF")!=-1
+        				||item.name == "K" || item.name=="D"||item.name=="J"){        			
                 		item.hide();                
         		}        	
         		
@@ -351,9 +397,34 @@ $(function() {
                                 text: 'Indicator'
                             }
                         });
-        		}        	
-        		
-        	}        	
+        		}     
+        	} else if (item.visible && (item.name == "K" || item.name=="D"||item.name=="J" )){
+        		//Hide KDJ if any
+        		item.hide();
+        	}
+       });
+    });
+	
+	$('#showKdj').click(function(){
+		var chart = $('#chart').highcharts();
+        var	series = chart.series;
+        _.each(series, function(item){
+        	if (_.isString(item.name) && !item.visible){
+        		if (item.name.indexOf("K")!=-1 ||item.name.indexOf("D")!=-1 ||item.name.indexOf("J")!=-1){        			
+                		item.show();     
+                		chart.yAxis[2].update({
+                            labels: {
+                                enabled: true
+                            },
+                            title: {
+                                text: 'Indicator'
+                            }
+                        });
+        		}     
+        	} else if (item.visible && (item.name == "MACD" || item.name=="DEA"||item.name=="DIF" )){
+        		//Hide MACD if any
+        		item.hide();
+        	}
        });
     });
 	
@@ -635,7 +706,7 @@ $(function() {
               <button id="showMacd" type="button" class="btn btn-primary" data-toggle="button">MACD</button>
               </td>
               <td>
-              <button type="button" class="btn btn-primary" data-toggle="button">KDJ</button>
+              <button id="showKdj" type="button" class="btn btn-primary" data-toggle="button">KDJ</button>
               </td>
               <td>
               <button id="hideIndicator" type="button" class="btn btn-primary" data-toggle="button">None</button><br>

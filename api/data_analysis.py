@@ -61,6 +61,23 @@ def RSI(df, n):
     df = df.join(RSI)
     return df
 
+#KDJ indicator
+#RSV:=(CLOSE-LLV(LOW,N))/(HHV(HIGH,N)-LLV(LOW,N))*100;
+#K:SMA(RSV,M1,1);
+#D:SMA(K,M2,1);
+#J:3*K-2*D;
+def KDJ(df, n,M1,M2):
+    rsv = Series(rolling_min(df['low'], n,min_periods=1), name = 'RSV')
+    df = df.join(rsv)
+    k = Series(rolling_mean(df['RSV'], M1,min_periods=1), name = 'K')
+    df = df.join(k)
+    d = Series(rolling_mean(df['K'], M2,min_periods=1), name = 'D')
+    df = df.join(d)
+    j = Series(3*df['K']-2*df['D'], name = 'J')
+    df = df.join(j)
+
+    return df
+
 
 if __name__ == '__main__':
     d = {'TIMESTAMP' : Series([1294311545, 1294317813, 1294318449]),
@@ -123,6 +140,10 @@ if __name__ == '__main__':
     print 'MACD***************'
     macd = MACD(price,12,26,9)
     print macd.to_json(date_format='iso', orient='records')
+    
+    print 'KDJ****************'
+    kdj = KDJ(price,9,3,3)
+    print kdj.to_json(date_format='iso', orient='records')
     
     js = price.to_json(date_format='iso', orient='records')
     #print js

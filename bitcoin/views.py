@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 from api.collector import get_trades,get_string_data
 from pandas import *
-from api.data_analysis import MA,MACD
+from api.data_analysis import MA,MACD,KDJ
 from django.utils.translation import ugettext as _
 from api.dao import get_markets,save_account,get_account,get_account_by_email,update_alerts,get_alert,get_market_by_name
 from api.models import Account
@@ -248,6 +248,9 @@ def ohlc(request):
         mid = 9
     result = MACD(result,int(short),int(long2),int(mid))
     print '%d*****************',len(result.index)
+    
+    #KDJ indicator
+    result = KDJ(result,9,3,3)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     #print js

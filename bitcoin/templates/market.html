@@ -24,6 +24,10 @@
   
 <script type="text/javascript">
 //console.log('{{market}}')
+var nav_highlight = function(object){
+	$('li').removeClass('active');
+	object.parent().addClass('active');
+}
 var show_chart = function(time_period){
 	$.getJSON('/ohlc/',{ period: time_period,market:'{{market}}',
 		ma1:$('#ma1').val(),ma2:$('#ma2').val(),ma3:$('#ma3').val(),ma4:$('#ma4').val(),
@@ -139,19 +143,30 @@ var show_chart = function(time_period){
 		]];
 
 		// create the chart
+		var crosshairsStyle = {width: 1,color: 'white'};
 		$('#chart').highcharts('StockChart', {
 			chart:{
-				backgroundColor:'#FCFFC5'
+				backgroundColor:'#000000'
 			},
+			plotOptions: {
+	            candlestick: {
+	                color: 'green',
+	                upColor: 'red'
+	            }
+	        },
 			exporting: {
 	            enabled: false,
 	        },
 			tooltip: {
 		    	valueDecimals: 2,	
-		    	crosshairs: [true, true],
+		    	crosshairs: [crosshairsStyle,crosshairsStyle],
 		    	shared: true,
+		    	borderWidth: 0,
+		    	style: {
+		    		fontSize: '11px',		    		
+		    	},
 		    	positioner: function () {
-	            	return { x: 50, y: 60 };
+	            	return { x: 50, y: 36 };
 	            },
 	            formatter: function() {
 	                var s = 'Date:'+moment(this.x).format("YYYY-MM-DD, h:mm a");
@@ -165,9 +180,11 @@ var show_chart = function(time_period){
 	                	//console.log(tmp);
 	                	if (name == "Bitcoin"){
 	                		s += " Open:"+point.point.open+" High:"+point.point.high+" Low:"+point.point.low+" Close:"+point.point.close	                		
-	                	} //else if (name =="MACD" || name=="DEA" ||name=="DIF"){
-	                		
-	                	//} else{
+	                	} else if (name =="Volume"){
+	                		//Limit to 2 bits after .
+		                	var y = numeral(parseFloat(point.y)).format('0.00');	                	
+		                    s +=  ' Volume: '+y
+	                	} //else{
 	                		//Limit to 2 bits after .
 		                	//var y = numeral(parseFloat(point.y)).format('0.00');	                	
 		                    //s +=  name +': '+y
@@ -186,21 +203,27 @@ var show_chart = function(time_period){
 			},
 		    
 		    rangeSelector: {
-		    	enabled: true,
+		    	enabled: false,
 		    	
 		    },
 
 		    title: {
 		        text: 'Bitcoin Graph',
 		        margin: 10,
+		        style: {
+	            	color: '#FFFFFF',	            	
+	           }
 		    },
 
 		    yAxis: [{
 		        title: {
 		            text: 'Price'
 		        },
-		        height: 200,
-		        lineWidth: 2
+		        height: 250,
+		        lineWidth: 2,
+		        offset: 15,
+		        gridLineWidth: 0,
+                minorGridLineWidth: 0,
 		    }, {
 		        title: {
 		            text: 'Volume'
@@ -208,15 +231,17 @@ var show_chart = function(time_period){
 		        top: 300,
 		        height: 100,
 		        offset: 0,
-		        lineWidth: 2
+		        lineWidth: 2,
+		        offset: 15,
 		    },{		  
 				title: {
 					text: 'Indicator'
 				},
-		        top: 400,			
-		        height: 50,
+		        top: 420,			
+		        height: 109,
 		        offset: 0,
-		        lineWidth: 2,
+		        lineWidth: 2,	
+		        offset: 15,
 		    }],
 		    
 		    series: [{
@@ -230,6 +255,7 @@ var show_chart = function(time_period){
 		        type: 'column',
 		        name: 'Volume',
 		        data: volume,
+		        turboThreshold: Number.MAX_VALUE,
 		        yAxis: 1,
 		        dataGrouping: {
 					units: groupingUnits
@@ -323,6 +349,30 @@ docReady( function() {
 	});
 	
 $(function() {
+	var originalDrawPoints = Highcharts.seriesTypes.column.prototype.drawPoints;
+
+    Highcharts.seriesTypes.column.prototype.drawPoints = function () {
+        var merge  = Highcharts.merge,
+            series = this,
+            chart  = this.chart,
+            points = series.points,
+            i      = points.length;
+        
+        while (i--) {
+            var candlePoint = chart.series[0].points[i];
+            var color = (candlePoint.open < candlePoint.close) ? '#FF0000' : '#008000';
+            var seriesPointAttr = merge(series.pointAttr);
+            
+            seriesPointAttr[''].fill = color;
+            seriesPointAttr.hover.fill = Highcharts.Color(color).brighten(0.3).get();
+            seriesPointAttr.select.fill = color;
+            
+            points[i].pointAttr = seriesPointAttr;
+        }
+
+        originalDrawPoints.call(this);
+    }
+    
 	var jsonUrl = "{% static sample.json%}"
 	//$.getJSON(jsonUrl+'sample.json', function(data) {
 		
@@ -556,22 +606,29 @@ $(function() {
     
     //Change time period
     $('#m1').click(function(){
+    	nav_highlight($(this));
     	show_chart('1Min');
     });
     
 	$('#m15').click(function(){
+		nav_highlight($(this));
 		show_chart('15Min');
     });
 	
 	$('#h6').click(function(){
+		//$('li').removeClass('active');
+		//$(this).parent().addClass('active');
+		nav_highlight($(this));
 		show_chart('6H');
     });
 	
 	$('#d1').click(function(){
+		nav_highlight($(this));
 		show_chart('D');
     });
 	
 	$('#w1').click(function(){
+		nav_highlight($(this));
 		show_chart('W');
     });
 
@@ -604,25 +661,25 @@ $(function() {
 </script>
 <script id="live_price" type="text/x-handlebars-template">
 {% verbatim %}
-  最新价：{{last}}&nbsp;&nbsp;&nbsp;&nbsp;最高价：{{high}} 最低价：{{low}}  成交量：{{vol}}
+  <font color=white>最新价：{{last}}&nbsp;&nbsp;&nbsp;&nbsp;最高价：{{high}} 最低价：{{low}}  成交量：{{vol}}</font>
 {% endverbatim %}
 </script>
 <script id="live_trades" type="text/x-handlebars-template">
 {% verbatim %}
   <table class="table">
     <thead>
-      <th>时间</th>
-      <th>价格</th>
-      <th>类型</th>
-	  <th>数量</th>
+      <th><font color=white>时间</font></th>
+      <th><font color=white>价格</font></th>
+      <th><font color=white>类型</font></th>
+	  <th><font color=white>数量</font></th>
     </thead>
     <tbody>
       {{#each []}}
         <tr>
-          <td>{{timestamp}}</td>
-          <td>{{this.price}}</td>
-          <td>{{this.type}}</td>
-		  <td>{{this.amount}}</td>
+          <td><font color=white>{{timestamp}}</font></td>
+          <td><font color=white>{{this.price}}</font></td>
+          <td><font color=white>{{this.type}}</font></td>
+		  <td><font color=white>{{this.amount}}</font></td>
         </tr>
       {{/each}}
     </tbody>
@@ -633,15 +690,15 @@ $(function() {
 {% verbatim %}
   <table id="asks" class="table">
     <thead>
-      <th>卖出价格</th>
-      <th>数量</th>
-      <th>累积量</th>	  
+      <th><font color=white>卖出价格</font></th>
+      <th><font color=white>数量</font></th>
+      <th><font color=white>累积量</font></th>	  
     </thead>
     <tbody>
       {{#each []}}
         <tr>
 		{{#each []}}
-          <td>{{this}}</td>
+          <td><font color=white>{{this}}</font></td>
 		{{/each}}          		  
         </tr>
       {{/each}}
@@ -653,15 +710,15 @@ $(function() {
 {% verbatim %}
   <table id="bids" class="table">
     <thead>
-      <th>买入价格</th>
-      <th>数量</th>
-      <th>累积量</th>	  
+      <th><font color=white>买入价格</font></th>
+      <th><font color=white>数量</font></th>
+      <th><font color=white>累积量</font></th>	  
     </thead>
     <tbody>
       {{#each []}}
         <tr>
 		{{#each []}}
-          <td>{{this}}</td>
+          <td><font color=white>{{this}}</font></td>
 		{{/each}}          		  
         </tr>
       {{/each}}
@@ -678,11 +735,11 @@ $(function() {
   	{% endverbatim %}
   	<div class="item w4 h3">  	
 	  	<ul class="nav nav-pills">
-	  	  <p class="navbar-text">Time Period:</p>
-		  <li><a id="w1" href="#">1w</a></li>
+	  	  <li><a href="#">Time Period:</a></li>
+	  	  <li><a id="w1" href="#">1w</a></li>
 		  <li><a id="d1" href="#">1d</a></li>
 		  <li><a id="h6" href="#">6h</a></li>
-		  <li><a id="m15" href="#">15m</a></li>
+		  <li class="active"><a id="m15" href="#">15m</a></li>
 		  <li><a id="m1" href="#">1m</a></li>
 		  <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">Settings <strong class="caret"></strong></a>
@@ -801,11 +858,11 @@ $(function() {
   	
     <div id="chart" class="item w5 h6">Chart</div>
     
-    <div id="asks" class="item w2 h7 autoscroll">卖单</div>    
+    <div id="asks" class="item w2 h7 autoscroll"><font color=white>卖单</font></div>    
     
-	<div id="bids" class="item w2 h7 autoscroll">买单</div>	
+	<div id="bids" class="item w2 h7 autoscroll"><font color=white>买单</font></div>	
 	
-    <div id="trades" class="item w6 h8 autoscroll">最新成交记录</div>
+    <div id="trades" class="item w6 h8 autoscroll"><font color=white>最新成交记录</font></div>
 
 
    	<audio id="audio" >

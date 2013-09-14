@@ -12,15 +12,14 @@
   width:  60px;
   height: 60px;
   float: left;
-  border: 1px solid;
   background: #000000;
 }
 
-.item.w2 { width: 230px; }
+.item.w2 { width: 200px; }
 .item.w3 { width: 180px; }
 .item.w4 { width: 100%; }
-.item.w5 { width: 66%; }
-.item.w6 { width: 33.6%; }
+.item.w5 { width: 70%; }
+.item.w6 { width: 29.6%; }
 
 .item.h2 { height: 40px; }
 .item.h3 { height: 36px; }
@@ -29,13 +28,6 @@
 .item.h6 { height: 560px; }
 .item.h7 { height: 220px; }
 .item.h8 { height: 53%; }
-
-.stamp {
-  background: red;
-  opacity: 0.75;
-  position: absolute;
-  border: 1px solid;
-}
 
 .autoscroll { 
 	overflow: auto; 

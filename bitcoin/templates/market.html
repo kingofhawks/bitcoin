@@ -28,6 +28,10 @@ var nav_highlight = function(object){
 	$('li').removeClass('active');
 	object.parent().addClass('active');
 }
+
+var format_number =function(n){
+	return numeral(parseFloat(n)).format('0.00');
+}
 var show_chart = function(time_period){
 	$.getJSON('/ohlc/',{ period: time_period,market:'{{market}}',
 		ma1:$('#ma1').val(),ma2:$('#ma2').val(),ma3:$('#ma3').val(),ma4:$('#ma4').val(),
@@ -143,7 +147,7 @@ var show_chart = function(time_period){
 		]];
 
 		// create the chart
-		var crosshairsStyle = {width: 1,color: 'white'};
+		var crosshairsStyle = {width: 1,color: 'white',zIndex: 50,dashStyle:'Solid'};
 		$('#chart').highcharts('StockChart', {
 			chart:{
 				backgroundColor:'#000000'
@@ -152,6 +156,15 @@ var show_chart = function(time_period){
 	            candlestick: {
 	                color: 'green',
 	                upColor: 'red'
+	            },
+	            series: {
+	                marker: {
+	                    states: {
+	                        hover: {
+	                            enabled: false
+	                        }
+	                    }
+	                }
 	            }
 	        },
 			exporting: {
@@ -179,7 +192,8 @@ var show_chart = function(time_period){
 	                	//var tmp = point.series.name +': '+point.y;
 	                	//console.log(tmp);
 	                	if (name == "Bitcoin"){
-	                		s += " Open:"+point.point.open+" High:"+point.point.high+" Low:"+point.point.low+" Close:"+point.point.close	                		
+	                		//s += " Open:"+point.point.open+" High:"+point.point.high+" Low:"+point.point.low+" Close:"+point.point.close
+	                		s += " Open:"+format_number(point.point.open)+" High:"+format_number(point.point.high)+" Low:"+format_number(point.point.low)+" Close:"+format_number(point.point.close)
 	                	} else if (name =="Volume"){
 	                		//Limit to 2 bits after .
 		                	var y = numeral(parseFloat(point.y)).format('0.00');	                	
@@ -668,18 +682,18 @@ $(function() {
 {% verbatim %}
   <table class="table">
     <thead>
-      <th><font color=white>时间</font></th>
-      <th><font color=white>价格</font></th>
-      <th><font color=white>类型</font></th>
-	  <th><font color=white>数量</font></th>
+      <th><font color=white size="2">时间</font></th>
+      <th><font color=white size="2">价格</font></th>
+      <th><font color=white size="2">类型</font></th>
+	  <th><font color=white size="2">数量</font></th>
     </thead>
     <tbody>
       {{#each []}}
         <tr>
-          <td><font color=white>{{timestamp}}</font></td>
-          <td><font color=white>{{this.price}}</font></td>
-          <td><font color=white>{{this.type}}</font></td>
-		  <td><font color=white>{{this.amount}}</font></td>
+          <td><font color=white size="1">{{timestamp}}</font></td>
+          <td><font color=white size="1">{{this.price}}</font></td>
+          <td><font color=white size="1">{{this.type}}</font></td>
+		  <td><font color=white size="1">{{this.amount}}</font></td>
         </tr>
       {{/each}}
     </tbody>
@@ -690,15 +704,15 @@ $(function() {
 {% verbatim %}
   <table id="asks" class="table">
     <thead>
-      <th><font color=white>卖出价格</font></th>
-      <th><font color=white>数量</font></th>
-      <th><font color=white>累积量</font></th>	  
+      <th><font color=white size="2">卖出价格</font></th>
+      <th><font color=white size="2">数量</font></th>
+      <th><font color=white size="2">累积量</font></th>	  
     </thead>
     <tbody>
       {{#each []}}
         <tr>
 		{{#each []}}
-          <td><font color=white>{{this}}</font></td>
+          <td><font color=white size="1">{{this}}</font></td>
 		{{/each}}          		  
         </tr>
       {{/each}}
@@ -710,15 +724,15 @@ $(function() {
 {% verbatim %}
   <table id="bids" class="table">
     <thead>
-      <th><font color=white>买入价格</font></th>
-      <th><font color=white>数量</font></th>
-      <th><font color=white>累积量</font></th>	  
+      <th><font color=white size="2">买入价格</font></th>
+      <th><font color=white size="2">数量</font></th>
+      <th><font color=white size="2">累积量</font></th>	  
     </thead>
     <tbody>
       {{#each []}}
         <tr>
 		{{#each []}}
-          <td><font color=white>{{this}}</font></td>
+          <td><font color=white size="1">{{this}}</font></td>
 		{{/each}}          		  
         </tr>
       {{/each}}
@@ -863,8 +877,7 @@ $(function() {
 	<div id="bids" class="item w2 h7 autoscroll"><font color=white>买单</font></div>	
 	
     <div id="trades" class="item w6 h8 autoscroll"><font color=white>最新成交记录</font></div>
-
-
+	
    	<audio id="audio" >
         <source src="../static/alert.mp3" type="audio/mpeg"></source>
 			Your browser does not support the audio element.

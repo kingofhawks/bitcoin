@@ -6,7 +6,7 @@
   {% load i18n %}
   
   <title>{% trans "比特币市场实时行情" %}</title>
-  <link rel="stylesheet" href="../static/css/bitcoin.css" />
+  <link rel="stylesheet" href="../static/css/main.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap-theme.css" />
   
@@ -26,7 +26,7 @@ var refresh_markets = function(){
         //console.log(source);
         Handlebars.registerHelper('market_name', function() {  	      
 			  return new Handlebars.SafeString(	
-					  '<a  target="_blank" href="http://localhost:8000/market/'+this.name+'" >'+this.name+'</a>'					 
+					  '<a  target="_blank" href="/market/'+this.name+'" >'+this.name+'</a>'					 
 			  );
 		 });
         var template = Handlebars.compile(source);

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+{% load staticfiles %}
+<title>Create Market</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}">
+<link rel="stylesheet" href="{% static "bootstrap/css/bootstrap-theme.css" %}">
+</head>
+<body>
+<div class="container">
+<div class="row">
+<div class="span8">
+<form class="form-horizontal"  method='post' action='/create_ticker/'>{% csrf_token %}
+<fieldset>
+
+<legend>Market</legend>
+
+<div class="control-group">
+<label class="control-label">Name</label>
+<div class="controls">
+<input type="text" class="input-xlarge" id="name" name="name" required rel="popover" data-content="Enter your first and last name." data-original-title="Full Name">
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label">Ticker API</label>
+<div class="controls">
+<input type="text" class="input-xlarge" id="ticker" name="ticker" required rel="popover" data-content="Enter your first and last name." data-original-title="Full Name">
+</div>
+</div>
+
+
+<div class="control-group">
+<label class="control-label">Depth API</label>
+<div class="controls">
+<input type="text" class="input-xlarge" id="depth" name="depth" required rel="popover" data-content="What’s your email address?" data-original-title="Email">
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label">Trade API</label>
+<div class="controls">
+<input type="text" class="input-xlarge" id="trade"  name="trade" rel="popover" data-content="What’s your email address?" data-original-title="Email">
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label"></label>
+<div class="controls">
+<button type="submit" class="btn btn-success" >Create Market</button>
+</div>
+</div>
+
+</fieldset>
+</form>
+</div>
+</div>
+</div>
+</body>
+</html>

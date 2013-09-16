@@ -1,0 +1,34 @@
+* {
+  box-sizing: border-box;
+}
+
+.container2 {
+  background: #EEE;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.item {
+  width:  60px;
+  height: 60px;
+  float: left;
+  background: #FFFFFF;
+}
+
+.item.w2 { width: 200px; }
+.item.w3 { width: 180px; }
+.item.w4 { width: 100%; }
+.item.w5 { width: 70%; }
+.item.w6 { width: 29.6%; }
+
+.item.h2 { height: 40px; }
+.item.h3 { height: 36px; }
+.item.h4 { height: 220px; }
+.item.h5 { height: 280px; }
+.item.h6 { height: 560px; }
+.item.h7 { height: 220px; }
+.item.h8 { height: 53%; }
+
+.autoscroll { 
+	overflow: auto; 
+}

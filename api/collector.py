@@ -76,7 +76,10 @@ def save_live_price(live_price):
 #get the latest trade's time        
 def get_latest_trade_time():
     trades = Trade.objects.order_by('-time')
-    return trades[0].time
+    if (len(trades)>=1):
+        return trades[0].time
+    else:
+        return 0
 
 if __name__ == "__main__":    
     params = dict(

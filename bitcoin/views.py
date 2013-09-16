@@ -16,8 +16,8 @@ from api.collector import get_trades,get_string_data
 from pandas import *
 from api.data_analysis import MA,MACD,KDJ
 from django.utils.translation import ugettext as _
-from api.dao import get_markets,save_account,get_account,get_account_by_email,update_alerts,get_alert,get_market_by_name
-from api.models import Account
+from api.dao import get_markets,save_account,get_account,get_account_by_email,update_alerts,get_alert,get_market_by_name,init_ticker_table
+from api.models import Account,Ticker
 from api.tasks import get_query_parameters
 
 #import json
@@ -61,7 +61,7 @@ def login(request):
     password = request.POST.get('password')                                          
     account = get_account(username,password)
     
-    if len(account) == 1:
+    if len(account) >= 1:
         request.session['username'] = username  
         return redirect('/index')  
     else:        
@@ -133,6 +133,9 @@ def bitcoin(request):
     return render_to_response('bitcoin.html', locals())
 
 def dropdown(request):
+    #Test code
+    init_ticker_table()
+    
     return render_to_response('dropdown.html', locals())
 
 @csrf_exempt
@@ -143,6 +146,22 @@ def update_alert(request):
     username = request.session['username']
 
     update_alerts(username,market,high,low)
+    return HttpResponse("OK")
+
+
+def market_form(request):
+    return render_to_response('market_form.html', locals())
+
+
+@csrf_exempt
+def create_ticker(request):
+    market = Ticker()
+    market.name = request.POST.get('name')
+    market.ticker = request.POST.get('ticker')
+    market.depth = request.POST.get('depth')
+    market.trade = request.POST.get('trade')    
+    market.save()
+    
     return HttpResponse("OK")
 
 #def get_alert(request):

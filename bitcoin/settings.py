@@ -195,5 +195,5 @@ CELERYBEAT_SCHEDULE = {
 }
 
 #SMTP setting with GMail server
-SMTP_USERNAME = 'username'
-SMTP_PASSWORD = 'password'
+SMTP_USERNAME = 'service@59.la'
+SMTP_PASSWORD = 'kuaidianroc234'

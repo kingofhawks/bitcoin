@@ -19,7 +19,6 @@ from django.utils.translation import ugettext as _
 from api.dao import get_markets,save_account,get_account,get_account_by_email,update_alerts,get_alert,get_market_by_name,init_ticker_table
 from api.models import Account,Ticker
 from api.tasks import get_query_parameters
-
 #import json
     
 def test(request):
@@ -88,11 +87,15 @@ def get_password(request):
         data['message'] = 'Your email address is invalid!'        
     else:
         import smtplib
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        #login to gmail SMTP server with your account
+        #server = smtplib.SMTP('smtp.gmail.com', 587)
+        #server.starttls() #This is MUST for GMail#
+        
+        server = smtplib.SMTP('smtp.exmail.qq.com')
+        
+        #login to SMTP server with your account
         import settings
         server.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
+
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
         
@@ -105,11 +108,13 @@ def get_password(request):
         try:
             m.attach(MIMEText(body))
             
-            #Send the mail      
-            server.sendmail("from@gmail.com", "to@qq.com", m.as_string())
+            #Send the mail   
+            server.sendmail("service@59.la", email, m.as_string())
             data['success'] = 'OK'
             data['message'] = 'Please check your email for your password.'
         except:
+            import sys,traceback
+            traceback.print_exc(file=sys.stdout)
             data['success'] = 'Fail'
             data['message'] = 'Password send to your email failed.'
         
@@ -162,7 +167,8 @@ def create_ticker(request):
     market.trade = request.POST.get('trade')    
     market.save()
     
-    return HttpResponse("OK")
+    #return HttpResponse("OK")
+    return redirect('/index')
 
 #def get_alert(request):
 #    alert = Alert.objects.distinct()

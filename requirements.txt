@@ -72,6 +72,7 @@ trade±í£ºhttps://796.com/apiV2/trade/100.html?op=asicminer
 
 
 MTgox
+ticker:http://data.mtgox.com/api/1/BTCUSD/ticker_fast
 depth±í£ºhttp://data.mtgox.com/code/data/getDepth.php?Currency=USD
 trade±í£ºhttp://data.mtgox.com/api/0/data/getTrades.php?Currency=USD
 

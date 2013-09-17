@@ -3,7 +3,7 @@ Created on 2013-9-2
 
 @author: Simon
 '''
-from collector import get_ticker,get_trades,get_orders,get_string_data,get_accumulated_volume,save_trades,save_live_price
+from collector import get_ticker,get_ticker2,get_trades,get_orders,get_orders2,get_string_data,get_accumulated_volume,save_trades,save_live_price
 from redis_api import publish
 from celery import task
 from dao import get_markets
@@ -23,20 +23,21 @@ def polling(market):
     print '%s,%s,%s,%s' % (name,ticker,depth,trade)
     
     #live price
-    live_price = get_ticker(ticker,get_query_parameters(ticker))
+    live_price = get_ticker2(ticker)
     live_price['market'] = name
     publish('chat',get_string_data(live_price))
     
     #save live price
     save_live_price(live_price)
     
-    orders = get_orders(depth,get_query_parameters(depth))
+    orders = get_orders2(depth)
     bids = orders[0]
     asks = orders[1]
+    #print asks
 
     #live asks
     live_asks = get_string_data({"market":name,"data":get_string_data(get_accumulated_volume(asks))})
-    #print live_asks
+    print live_asks
     publish('asks',live_asks)
     
     #live bids

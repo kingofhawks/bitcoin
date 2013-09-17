@@ -6,9 +6,23 @@ Created on 2013-8-29
 import  requests
 import simplejson as json
 from api.models import Trade
+from api.utils import get_query_parameters
 
 def get_json(url,params):   
-    resp = requests.get(url=url, params=params)
+    if params is None:
+        resp = requests.get(url=url)
+        #print resp.text
+        data = resp.json()    
+        return data
+    else:
+        resp = requests.get(url=url, params=params)
+        #print resp.text
+        data = resp.json()    
+        return data
+
+def get_json2(url):   
+    resp = requests.get(url=url)
+    #print resp.text
     data = resp.json()    
     return data
     
@@ -20,17 +34,73 @@ def get_orders(url,params):
     #print orders
     return orders
 
-def get_return(url,params):
+def get_orders2(url):
+    params = get_query_parameters(url)
     json = get_json(url,params)
     #print json
+    data = json.get('return')
+    if (url.find('mtgox') != -1):
+        bids = []
+        bidsJson = data.get('bids')
+        for bid in bidsJson:
+            b = []
+            b.append(bid.get('price'))
+            b.append(bid.get('amount'))
+            bids.append(b)
+            
+        asks = []
+        asksJson = data.get('asks')
+        for ask in asksJson:
+            b = []
+            b.append(ask.get('price'))
+            b.append(ask.get('amount'))
+            asks.append(b)
+            
+        return bids,asks
+    else:
+        orders = data.get('bids'),data.get('asks')
+        #print orders
+        return orders
+
+def get_return(url,params):
+    json = get_json(url,params)
+    print json
     data = json.get('return')
     return data
 
 def get_trades(url,params):
-    return get_return(url,params)
+    if (url.find('mtgox') != -1):
+        return get_json(url,params)
+    else:
+        return get_return(url,params)
 
 def get_ticker(url,params):
-    return get_return(url,params)
+    result = get_return(url,params)
+    if (url.find('mtgox') != -1):
+        print result
+        #return get_json(url,params)
+    return result
+
+def get_ticker2(url):
+    params = get_query_parameters(url)
+    result = get_return(url,params)
+    if (url.find('mtgox') != -1):
+        high = result['high']['value']
+        low = result['low']['value']
+        last = result['last']['value']
+        vol = result['vol']['value']
+        sell = result['sell']['value']
+        buy = result['buy']['value']
+        result['high'] = high
+        result['low'] = low
+        result['last'] = last
+        result['vol'] = vol
+        result['sell'] = sell
+        result['buy'] = buy
+        #print sell
+        #print result
+        #return get_json(url,params)
+    return result
 
 #return string data in collection,rather than unicode data    
 def get_string_data(data):
@@ -44,6 +114,8 @@ def get_accumulated_volume(orders):
         previous = 0
         if (i>=1):
             previous = orders[i-1][2] 
+        print str(order[1])
+        print previous
         amount = float(str(order[1]))+float(previous)
         order.append("{0:.2f}".format(amount))
     return orders
@@ -96,25 +168,31 @@ if __name__ == "__main__":
 #    import simplejson as json
 #    data = json.loads(asks1)
     print '***************'
-#    for i in range(len(asks)):
-#        ask = asks[i]
-#        previous = 0
-#        if (i>=1):
-#            previous = asks[i-1][2] 
-#        ask.append(float(str(ask[1]))+float(previous))
-#
-#    print asks
     print get_string_data(get_accumulated_volume(asks))
 
     trades = get_trades('https://796.com/apiV2/trade/100.html',params)
     print trades
     print len(trades)
     print get_latest_trade_time()
-    save_trades(trades)
+    #save_trades(trades)
 
     import datetime
     print datetime.datetime.fromtimestamp(trades[0].get('time')).strftime('%Y-%m-%d %H:%M:%S')
     print datetime.datetime.fromtimestamp(trades[len(trades)-1].get('time')).strftime('%Y-%m-%d %H:%M:%S')
-    ticker = get_ticker('https://796.com/apiV2/ticker.html',params)
-    print ticker
-    print get_string_data(ticker)
+#    resp = requests.get('http://data.mtgox.com/api/1/BTCUSD/ticker')
+#    print resp.text
+    ticker = get_ticker2('http://data.mtgox.com/api/1/BTCUSD/ticker') 
+    print ticker     
+    
+    ticker = get_ticker2('https://796.com/apiV2/ticker.html?op=futures') 
+    print ticker  
+#    print get_string_data(ticker)
+
+    orders = get_orders2('http://data.mtgox.com/api/1/BTCUSD/depth/fetch')
+    bids = orders[0]
+    asks = orders[1]
+    print bids
+    print get_string_data(get_accumulated_volume(bids))
+    print asks
+    asks1 = get_string_data(asks)
+    print asks1

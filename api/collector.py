@@ -5,7 +5,7 @@ Created on 2013-8-29
 '''
 import  requests
 import simplejson as json
-from api.models import Trade
+from api.models import Trade,MtgoxTrade,Futures796Trade,Stockpd796Trade
 from api.utils import get_query_parameters
 
 def get_json(url,params):   
@@ -64,7 +64,7 @@ def get_orders2(url):
 
 def get_return(url,params):
     json = get_json(url,params)
-    print json
+    #print json
     data = json.get('return')
     return data
 
@@ -121,11 +121,24 @@ def get_accumulated_volume(orders):
     return orders
 
 #save live trades into DB
-def save_trades(trades):        
+def save_trades(market,trades):    
+    last_update = get_latest_trade_time(market) 
+    print last_update
+       
     for data in trades:
-        time = int(data['time'])
-        if (int(time)>int(get_latest_trade_time())):
-            trade = Trade()        
+        if (market == 'MTgox'):
+            #time = int(data['time'])
+            trade = MtgoxTrade()
+            return 
+        elif (market == '796futures'):  
+            time = int(data['time'])
+            trade = Futures796Trade()
+        elif (market == '796stockpd'):
+            time = int(data['time'])
+            trade = Stockpd796Trade()          
+        
+        
+        if (int(time)>int(last_update)):
             trade.time = time
             trade.price = float(data['price'])
             trade.amount = float(data['amount'])
@@ -146,8 +159,14 @@ def save_live_price(live_price):
 
 
 #get the latest trade's time        
-def get_latest_trade_time():
-    trades = Trade.objects.order_by('-time')
+def get_latest_trade_time(market):
+    if (market == 'MTgox'):
+        trades = MtgoxTrade.objects.order_by('-time')                   
+    elif (market == '796futures'):  
+        trades = Futures796Trade.objects.order_by('-time')                
+    elif (market == '796stockpd'):
+        trades = Stockpd796Trade.objects.order_by('-time')                
+
     if (len(trades)>=1):
         return trades[0].time
     else:

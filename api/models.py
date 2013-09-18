@@ -7,6 +7,25 @@ class Trade(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     type = models.CharField(max_length=4)
     
+    class Meta:
+        abstract = True
+    
+class MtgoxTrade(Trade):
+    pass
+    class Meta(Trade.Meta):
+        db_table = 'MtgoxTrade'
+        
+class Futures796Trade(Trade):
+    pass
+    class Meta(Trade.Meta):
+        db_table = 'Futures796Trade'
+        
+class Stockpd796Trade(Trade):
+    pass
+    class Meta(Trade.Meta):
+        db_table = 'Stockpd796Trade'   
+
+    
 class Ticker(models.Model):
     last = models.DecimalField(max_digits=10, decimal_places=2,null=True)
     high = models.DecimalField(max_digits=10, decimal_places=2,null=True)

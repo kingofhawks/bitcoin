@@ -289,3 +289,10 @@ def ohlc(request):
     
     return HttpResponse(json.dumps(js), mimetype="application/json") 
 
+
+def polling_mgtox(request):
+    url = 'https://data.mtgox.com/api/1/BTCusd/trades?since=1316354111564378'
+    from api.history import poll_history
+    poll_history(url)
+    return HttpResponse("OK")
+

@@ -33,12 +33,12 @@ def poll_history(url):
     last_data = data[len(data)-1]
     #print last_data
     last_tid = last_data.get('tid')
-    #print last_tid
+    print last_tid
     if (long(last_tid)<long(params.get('since'))):
         print 'return now'
         return 
     url = 'https://data.mtgox.com/api/1/BTCusd/trades?since='+last_tid
-    #poll_history(url)
+    poll_history(url)
     return result
     
 if __name__=='__main__':

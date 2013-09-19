@@ -7,6 +7,7 @@ import  requests
 import simplejson as json
 from api.models import Trade,MtgoxTrade,Futures796Trade,Stockpd796Trade
 from api.utils import get_query_parameters
+from api.history import poll_history
 
 def get_json(url,params):   
     if params is None:
@@ -70,7 +71,8 @@ def get_return(url,params):
 
 def get_trades(url,params):
     if (url.find('mtgox') != -1):
-        return get_json(url,params)
+#        return get_json(url,params)
+        return poll_history(url,False)[:30]
     else:
         return get_return(url,params)
 
@@ -161,14 +163,17 @@ def save_live_price(live_price):
 #get the latest trade's time        
 def get_latest_trade_time(market):
     if (market == 'MTgox'):
-        trades = MtgoxTrade.objects.order_by('-time')                   
+        trades = MtgoxTrade.objects.order_by('-tid')                   
     elif (market == '796futures'):  
         trades = Futures796Trade.objects.order_by('-time')                
     elif (market == '796stockpd'):
         trades = Stockpd796Trade.objects.order_by('-time')                
 
     if (len(trades)>=1):
-        return trades[0].time
+        if (market == 'MTgox'):
+            return trades[0].tid
+        else:
+            return trades[0].time
     else:
         return 0
 
@@ -192,7 +197,7 @@ if __name__ == "__main__":
     trades = get_trades('https://796.com/apiV2/trade/100.html',params)
     print trades
     print len(trades)
-    print get_latest_trade_time()
+    print get_latest_trade_time('MTgox')
     #save_trades(trades)
 
     import datetime

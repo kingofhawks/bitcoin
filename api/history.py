@@ -4,45 +4,66 @@ Created on 2013-9-17
 @author: Simon
 '''
 from api.utils import get_query_parameters
-from api.collector import get_json
+from api.utils import get_json
 from api.models import MtgoxTrade
 
-def poll_history(url):    
+def poll_history(url,save):    
     #resp = requests.get(url=url)
     params = get_query_parameters(url)
     json = get_json(url,params)
-    data = json.get('return')
+    #print json
+    if ('return' in json):
+        data = json.get('return')
+    else:
+        data = json
     result = []
     #print data
     for trade in data:
-        mtgox = MtgoxTrade()
-        mtgox.amount = trade['amount']
-        mtgox.time = trade['date']
-        mtgox.price = trade['price']
-        mtgox.type = trade['trade_type']
-        mtgox.save()
-        
-#        js = dict()
-#        js['time']= trade['date']
-#        js['price']= trade['price']
-#        js['amount']= trade['amount']
-#        js['type']= trade['trade_type']
-#        result.append(js)
+        if save:
+            mtgox = MtgoxTrade()
+            mtgox.amount = trade['amount']
+            mtgox.time = trade['date']
+            mtgox.price = trade['price']
+            mtgox.type = trade['trade_type']
+            mtgox.tid = trade['tid']
+            mtgox.save()
+        else:     
+            js = dict()
+            js['time']= trade['date']
+            js['price']= trade['price']
+            js['amount']= trade['amount']
+            js['type']= trade['trade_type']
+            js['tid']= trade['tid']
+            result.append(js)
         #print js
     #print result
-    last_data = data[len(data)-1]
+    length = len(data)-1
+    if (length >=1):
+        last_data = data[length]
+    else:
+        return result
     #print last_data
     last_tid = last_data.get('tid')
-    print last_tid
-    if (long(last_tid)<long(params.get('since'))):
-        print 'return now'
+    #print last_tid
+    since = params.get('since')
+    if (since is not None and long(last_tid)<long(since)):
+        print 'Finish polling mgtox history data'
         return 
     url = 'https://data.mtgox.com/api/1/BTCusd/trades?since='+last_tid
-    poll_history(url)
-    return result
+    if save:
+        poll_history(url,save)
+        return
+    else:
+        result.extend(poll_history(url,save))
+        return result
     
 if __name__=='__main__':
     url = 'https://data.mtgox.com/api/1/BTCusd/trades?since=1316354111564378'
-    print poll_history(url)
+    #print poll_history(url)
+    url = 'https://data.mtgox.com/api/1/BTCusd/trades?raw'
+    result= poll_history(url,False)
+    print len(result)
+    print result[:30]
+    #print poll_history(url,True)
     
     

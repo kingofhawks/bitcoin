@@ -3,6 +3,7 @@ MTgox
 ticker：http://data.mtgox.com/api/1/BTCUSD/ticker
 市场深度：http://data.mtgox.com/api/1/BTCUSD/depth/fetch
 成交记录：https://data.mtgox.com/api/1/BTCUSD/trades?raw
+History:https://data.mtgox.com/api/1/BTCusd/trades?since=1316354111564378
 
 btcchina
 ticker：https://data.btcchina.com/data/ticker

@@ -11,7 +11,8 @@ class Trade(models.Model):
         abstract = True
     
 class MtgoxTrade(Trade):
-    pass
+    tid = models.IntegerField()
+    
     class Meta(Trade.Meta):
         db_table = 'MtgoxTrade'
         

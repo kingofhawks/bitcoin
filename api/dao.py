@@ -60,6 +60,26 @@ def get_trades_by_market(market):
             js['type']= trade.type
             data.append(js)
     return data
+
+def get_last30_trades(market):
+    data = []
+    
+    if (market == 'MTgox'):
+        trades = MtgoxTrade.objects.order_by('-tid')[:30]
+    elif (market == '796futures'):
+        trades = Futures796Trade.objects.order_by('-tid')[:30]
+    elif (market == '796stockpd'):
+        trades = Stockpd796Trade.objects.order_by('-tid')[:30]
+    
+    for trade in trades:
+            js = dict()
+            js['time']= trade.time
+            js['price']= trade.price
+            js['amount']= trade.amount
+            js['type']= trade.type
+            js['tid']= trade.tid
+            data.append(js)
+    return data
         
 if __name__ == "__main__":     
     #init_ticker_table()
@@ -74,4 +94,5 @@ if __name__ == "__main__":
 #    print get_alert('simon','test')
 #    update_alerts('simon','test',0,0)
 #    print get_market_by_name('796futures')
-    print get_trades_by_market('MTgox')
+    #print get_trades_by_market('MTgox')
+    print get_last30_trades('MTgox')

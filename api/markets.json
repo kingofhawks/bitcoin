@@ -1,5 +1,0 @@
-[
-{"market":"796futures","ticker":"https://796.com/apiV2/ticker.html?op=futures","depth":"https://796.com/apiV2/depth/100.html?op=futures","trade":"https://796.com/apiV2/trade/100.html?op=futures"},
-{"market":"796stockpd","ticker":"https://796.com/apiV2/ticker.html?op=xchange","depth":"https://796.com/apiV2/depth/100.html?op=xchange","trade":"https://796.com/apiV2/trade/100.html?op=xchange"}
-]
-

@@ -6,16 +6,15 @@
 		<title>Bitcoin Example</title>
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript" src="{% static "js/highstock.js" %}"></script>
+  		<script type="text/javascript" src="{% static "js/exporting.js" %}"></script>
 		<script type="text/javascript">
 $(function() {
-	var jsonUrl = "{% static data.json%}"
-	$.getJSON(jsonUrl+'data.json', function(data) {
-
+	var jsonUrl = "{% static sample.json%}"
+		$.getJSON(jsonUrl+'sample.json', function(data) {
 		// split the data set into ohlc and volume
 		var ohlc = [],
 			volume = [],
-			ma7 = [],
-			ma14 = [],
 			dataLength = data.length;
 			
 		for (i = 0; i < dataLength; i++) {
@@ -25,16 +24,6 @@ $(function() {
 				data[i][2], // high
 				data[i][3], // low
 				data[i][4] // close
-			]);
-			
-			ma7.push([
-				data[i][0], // the date
-				data[i][4] // the volume
-			]);
-			
-			ma14.push([
-				data[i][0], // the date
-				115 // the volume
 			]);
 			
 			volume.push([
@@ -54,25 +43,18 @@ $(function() {
 
 		// create the chart
 		$('#container').highcharts('StockChart', {
-			navigator: {
-				enabled: false
-			},
-			
-			scrollbar: {
-				enabled: false
-			},
 		    
 		    rangeSelector: {
 		        selected: 1
 		    },
 
 		    title: {
-		        text: 'Bitcoin Graph'
+		        text: 'AAPL Historical'
 		    },
 
 		    yAxis: [{
 		        title: {
-		            text: 'Price'
+		            text: 'OHLC'
 		        },
 		        height: 200,
 		        lineWidth: 2
@@ -82,14 +64,6 @@ $(function() {
 		        },
 		        top: 300,
 		        height: 100,
-		        offset: 0,
-		        lineWidth: 2
-		    },{		  
-				title: {
-					text: 'MACD'
-				},
-		        top: 400,			
-		        height: 50,
 		        offset: 0,
 		        lineWidth: 2
 		    }],
@@ -109,29 +83,6 @@ $(function() {
 		        dataGrouping: {
 					units: groupingUnits
 		        }
-		    }, {
-		        type: 'line',
-		        name: 'MA7',
-		        data: ma7,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
-		    }, {
-		        type: 'line',
-		        name: 'DEA',
-		        data: ma7,
-		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
-		    }, {
-		        type: 'line',
-		        name: 'DIF',
-		        data: ma14,
-		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
 		    }]
 		});
 	});
@@ -139,8 +90,6 @@ $(function() {
 		</script>
 	</head>
 	<body>
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 
 <div id="container" style="height: 500px; min-width: 500px"></div>
 

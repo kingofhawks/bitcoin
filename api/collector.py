@@ -72,7 +72,21 @@ def get_return(url,params):
 def get_trades(url,params):
     if (url.find('mtgox') != -1):
 #        return get_json(url,params)
-        return poll_history(url,False)[:30]
+        size = 300 #default show 30 trades
+        data =  poll_history(url,False)
+        length = len(data)
+        if (length >=30):
+            offset = length-size
+        else:
+            offset = 0
+        result = data[offset:length]
+        #save last tid
+        last_tid =  data[length-1]['tid']
+        print last_tid
+        
+        #Sort by tid
+        return sorted(result, key=lambda trade: trade['tid'],reverse=True)        
+        #return result
     else:
         return get_return(url,params)
 
@@ -129,9 +143,10 @@ def save_trades(market,trades):
        
     for data in trades:
         if (market == 'MTgox'):
-            #time = int(data['time'])
+            time = int(data['time'])
             trade = MtgoxTrade()
-            return 
+            trade.tid = data['tid']
+            #return 
         elif (market == '796futures'):  
             time = int(data['time'])
             trade = Futures796Trade()
@@ -196,7 +211,10 @@ if __name__ == "__main__":
 
     trades = get_trades('https://796.com/apiV2/trade/100.html',params)
     print trades
-    print len(trades)
+    
+    trades = get_trades('https://data.mtgox.com/api/1/BTCUSD/trades?raw',params)
+    print trades
+
     print get_latest_trade_time('MTgox')
     #save_trades(trades)
 

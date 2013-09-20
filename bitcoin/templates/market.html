@@ -118,23 +118,27 @@ var show_chart = function(time_period){
 				//json[i].time, // the date
 				json[i].MACDdiff_12_26 // MACD DIF
 			]);
-			
+
 			
 			//KDJ indicator
 			k.push([
 				time,						
-				json[i].k // K
+				json[i].K // K
 			]);
+			console.log('K***************')
+			console.log(k)
 			
 			d.push([
 				time,						
-				json[i].d // D
+				json[i].D // D
 			]);
+
 			
 			j.push([
 				time,						
-				json[i].j // J
-			]);
+				json[i].J // J
+			]);			
+
 		}
 		
 		// set the allowed units for data grouping
@@ -182,7 +186,7 @@ var show_chart = function(time_period){
 	            	return { x: 50, y: 36 };
 	            },
 	            formatter: function() {
-	                var s = 'Date:'+moment(this.x).format("YYYY-MM-DD, h:mm a");
+	            	var s = 'Date:'+moment(this.x).format("YYYY-MM-DD, h:mm a");
 	                //var s = '<b>'+ Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'</b>';
 	                //console.log(this.points.length);
 	                $.each(this.points, function(i, point) {
@@ -352,6 +356,17 @@ var show_chart = function(time_period){
 		        }
 		    }]
 		});
+		
+		//Default hide KDJ indicator
+		var ct = $('#chart').highcharts();
+        var	series = ct.series;
+        _.each(series, function(item){
+        	if (_.isString(item.name)){
+        		if (item.name=="K" || item.name =="D" || item.name=="J") {	
+        			item.hide();
+            	}
+        	}        	
+       });
 	});
 }
 docReady( function() {
@@ -452,7 +467,8 @@ $(function() {
         _.each(series, function(item){
         	if (_.isString(item.name) && !item.visible){
         		if (item.name.indexOf("MACD")!=-1 ||item.name.indexOf("DEA")!=-1 ||item.name.indexOf("DIF")!=-1){        			
-                		item.show();     
+        			console.log('show'+item.name)	
+        			item.show();     
                 		chart.yAxis[2].update({
                             labels: {
                                 enabled: true
@@ -464,6 +480,7 @@ $(function() {
         		}     
         	} else if (item.visible && (item.name == "K" || item.name=="D"||item.name=="J" )){
         		//Hide KDJ if any
+        		console.log('hide'+item.name)
         		item.hide();
         	}
        });
@@ -474,8 +491,9 @@ $(function() {
         var	series = chart.series;
         _.each(series, function(item){
         	if (_.isString(item.name) && !item.visible){
-        		if (item.name.indexOf("K")!=-1 ||item.name.indexOf("D")!=-1 ||item.name.indexOf("J")!=-1){        			
-                		item.show();     
+        		if (item.name=="K"||item.name=="D"||item.name=="J"){        			
+                		console.log('show'+item.name)
+        				item.show();     
                 		chart.yAxis[2].update({
                             labels: {
                                 enabled: true
@@ -487,6 +505,7 @@ $(function() {
         		}     
         	} else if (item.visible && (item.name == "MACD" || item.name=="DEA"||item.name=="DIF" )){
         		//Hide MACD if any
+        		console.log('hide'+item.name)
         		item.hide();
         	}
        });
@@ -556,7 +575,7 @@ $(function() {
   	  	      var template = Handlebars.compile(source);
   	  	      //var context = [{"price": "0.1154", "type": "buy", "amount": "10", "time": 1378606847}]  	  	      
   	  	      var html    = template(JSON.parse(liveTrades.data));
-
+			  //console.log($('#trades').html())
   	  	  	  $('#trades').html(html); 
   	      }
       }             
@@ -655,6 +674,10 @@ $(function() {
 		show_chart('15Min');
 	})
 	
+	$(".kdj").focusout(function() {
+		show_chart('15Min');
+	})
+	
 	$("#maDefault").click(function() {
 		//console.log($(this).val());
 		$('#ma1').val(5);
@@ -669,6 +692,14 @@ $(function() {
 		$('#short').val(12);
 		$('#long').val(26);
 		$('#mid').val(9);
+		show_chart('15Min');
+	})
+	
+	$("#kdjDefault").click(function() {
+		//console.log($(this).val());
+		$('#n').val(9);
+		$('#m1').val(3);
+		$('#m2').val(3);
 		show_chart('15Min');
 	})
 });
@@ -824,13 +855,13 @@ $(function() {
               MACD:
               </td>
               <td>
-               <input type='text' id="short" class="ma" style="width:20px" maxlength="3" value="12"/>
+               <input type='text' id="short" class="macd" style="width:20px" maxlength="3" value="12"/>
                </td>
                <td>
-               <input type='text' id="long" class="ma" style="width:20px" maxlength="3" value="26"/>
+               <input type='text' id="long" class="macd" style="width:20px" maxlength="3" value="26"/>
                </td>
                <td>
-               <input type='text' id="mid" class="ma" style="width:20px" maxlength="3" value="9"/>
+               <input type='text' id="mid" class="macd" style="width:20px" maxlength="3" value="9"/>
                </td>
                <td></td>               
                <td>               
@@ -842,13 +873,13 @@ $(function() {
               KDJ:
               </td>
               <td>
-               <input type='text' id="n" style="width:20px" maxlength="3" value="9"/>
+               <input type='text' id="n" class="kdj" style="width:20px" maxlength="3" value="9"/>
                </td>
                <td>
-               <input type='text' id="m1" style="width:20px" maxlength="3" value="3"/>
+               <input type='text' id="m1" class="kdj" style="width:20px" maxlength="3" value="3"/>
                </td>
                <td>
-               <input type='text' id="m2" style="width:20px" maxlength="3" value="3"/>
+               <input type='text' id="m2" class="kdj" style="width:20px" maxlength="3" value="3"/>
                </td>
                <td></td>               
                <td>               

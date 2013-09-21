@@ -276,10 +276,10 @@ def ohlc(request):
     if ma4 is None:
         ma4 = 30
 
-#    result = MA(result,int(ma1),'MA_5')
-#    result = MA(result,int(ma2),'MA_10')
-#    result = MA(result,int(ma3),'MA_20')
-#    result = MA(result,int(ma4),'MA_30')
+    result = MA(result,int(ma1),'MA_5')
+    result = MA(result,int(ma2),'MA_10')
+    result = MA(result,int(ma3),'MA_20')
+    result = MA(result,int(ma4),'MA_30')
     
     #MACD indicator
     short = request.GET.get('short')
@@ -294,11 +294,11 @@ def ohlc(request):
     #print ma1;
     if mid is None:
         mid = 9
-#    result = MACD(result,int(short),int(long2),int(mid))
+    result = MACD(result,int(short),int(long2),int(mid))
     print '%d*****************',len(result.index)
     
     #KDJ indicator
-#    result = KDJ(result,9,3,3)
+    result = KDJ(result,9,3,3)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     #print js

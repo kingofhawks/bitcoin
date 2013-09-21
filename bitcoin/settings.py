@@ -10,6 +10,7 @@ if ROOT_PATH not in sys.path:
     
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+#ALLOWED_HOSTS = ['*'] Must set when DEBUG is False
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -154,23 +155,41 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'bitcoin.log',
+            'formatter': 'verbose'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+        'django': {
+            'handlers': ['file','console'],
             'propagate': True,
+            'level':'DEBUG',
+        },
+        'bitcoin': {
+            'handlers': ['file','console'],
+            'level': 'DEBUG',
+        },
+        'api': {
+            'handlers': ['file','console'],
+            'level': 'DEBUG',
         },
     }
 }

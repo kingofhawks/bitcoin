@@ -55,9 +55,6 @@ var show_chart = function(time_period){
 			dataLength = json.length;
 			
 		for (i = 0; i < dataLength; i++) {
-			if (_.isUndefined(json[i])){
-				break;
-			}
 			//console.log(json[i])
 			var time = moment(json[i].time, "YYYY-MM-DDTHH:mm:ss")._d.getTime();
 
@@ -408,11 +405,7 @@ $(function() {
 
         originalDrawPoints.call(this);
     }
-    
-	var jsonUrl = "{% static sample.json%}"
-	//$.getJSON(jsonUrl+'sample.json', function(data) {
-		
-	//$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-ohlcv.json&callback=?', function(data) {
+
 	show_chart('15Min');
 	
 	$('.dropdown-toggle').dropdown();
@@ -917,7 +910,7 @@ $(function() {
     <div id="trades" class="item w6 h8 autoscroll"><font color=white>最新成交记录</font></div>
 	
    	<audio id="audio" >
-        <source src="../static/alert.mp3" type="audio/mpeg"></source>
+        <source src="{% static "alert.mp3" %}" type="audio/mpeg"></source>
 			Your browser does not support the audio element.
 	</audio>
 </div>

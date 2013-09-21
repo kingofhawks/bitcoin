@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		{% load staticfiles %}
+		<title>Bitcoin Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript" src="{% static "js/highstock.js" %}"></script>
+  		<script type="text/javascript" src="{% static "js/exporting.js" %}"></script>
+  		<script type="text/javascript" src="{% static "js/underscore-min.js" %}"></script>
+  		<script type="text/javascript" src="{% static "js/moment.min.js" %}"></script>
+		<script type="text/javascript">
+$(function() {
+		var jsonUrl = "{% static ohlc.json%}"
+		$.getJSON(jsonUrl+'ohlc.json', function(data) {
+		//console.log(data);
+		var json = JSON.parse(data);
+		console.log(json)
+		// split the data set into ohlc and volume
+		var ohlc = [],
+			volume = [],
+			dataLength = json.length;
+			
+		count = 0;
+		error = 0;
+		//What's wrong here?
+		for (i = 0; i < dataLength; i++) {//Not worked!
+		//for (i = 0; i < 133; i++) {//Worked!
+			count ++;
+			console.log(json[i])
+
+			var time = moment(json[i].time, "YYYY-MM-DDTHH:mm:ss")._d.getTime();
+			ohlc.push([
+						time,
+						//json[i].time, // the date
+						json[i].open, // open
+						json[i].high, // high
+						json[i].low, // low
+						json[i].close // close
+					]);	
+			volume.push([
+				time, // the date
+				json[i].amount // the volume
+			])
+		}
+		console.log(ohlc)
+		console.log(count)
+		console.log(ohlc.length)
+		console.log(error)
+		// set the allowed units for data grouping
+		var groupingUnits = [[
+			'week',                         // unit name
+			[1]                             // allowed multiples
+		], [
+			'month',
+			[1, 2, 3, 4, 6]
+		]];
+
+		// create the chart
+		$('#container').highcharts('StockChart', {
+		    
+		    rangeSelector: {
+		        selected: 1
+		    },
+
+		    title: {
+		        text: 'AAPL Historical'
+		    },
+
+		    yAxis: [{
+		        title: {
+		            text: 'OHLC'
+		        },
+		        height: 200,
+		        lineWidth: 2
+		    }, {
+		        title: {
+		            text: 'Volume'
+		        },
+		        top: 300,
+		        height: 100,
+		        offset: 0,
+		        lineWidth: 2
+		    }],
+		    
+		    series: [{
+		        type: 'candlestick',
+		        name: 'AAPL',
+		        data: ohlc,
+		        
+		    }, {
+		        type: 'column',
+		        name: 'Volume',
+		        data: volume,
+		        yAxis: 1,
+		       
+		    }]
+		});
+	});
+});
+		</script>
+	</head>
+	<body>
+
+<div id="container" style="height: 500px; min-width: 500px"></div>
+
+	</body>
+</html>

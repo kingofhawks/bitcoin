@@ -52,7 +52,7 @@ var show_chart = function(time_period){
 			k = [],
 			d = [],
 			j = [],
-			dataLength = data.length;
+			dataLength = json.length;
 			
 		for (i = 0; i < dataLength; i++) {
 			if (_.isUndefined(json[i])){
@@ -68,7 +68,9 @@ var show_chart = function(time_period){
 				json[i].high, // high
 				json[i].low, // low
 				json[i].close // close
-			]);			
+			]);	
+			console.log('ohlc***************')
+			console.log(ohlc)
 			
 			ma5.push([
 				time,
@@ -125,8 +127,8 @@ var show_chart = function(time_period){
 				time,						
 				json[i].K // K
 			]);
-			console.log('K***************')
-			console.log(k)
+			//console.log('K***************')
+			//console.log(k)
 			
 			d.push([
 				time,						
@@ -169,7 +171,8 @@ var show_chart = function(time_period){
 	                        }
 	                    }
 	                }
-	            }
+	            },	            
+	                
 	        },
 			exporting: {
 	            enabled: false,
@@ -186,7 +189,7 @@ var show_chart = function(time_period){
 	            	return { x: 50, y: 36 };
 	            },
 	            formatter: function() {
-	            	var s = 'Date:'+moment(this.x).format("YYYY-MM-DD, h:mm a");
+	            	var s = 'Date:'+moment(this.x).format("YYYY-MM-DD, HH:mm");
 	                //var s = '<b>'+ Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'</b>';
 	                //console.log(this.points.length);
 	                $.each(this.points, function(i, point) {
@@ -266,18 +269,18 @@ var show_chart = function(time_period){
 		        type: 'candlestick',
 		        name: 'Bitcoin',
 		        data: ohlc,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		        //dataGrouping: {
+					//units: groupingUnits
+		        //}
 		    }, {
 		        type: 'column',
 		        name: 'Volume',
 		        data: volume,
 		        turboThreshold: Number.MAX_VALUE,
 		        yAxis: 1,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'line',
 		        name: 'MA5',
@@ -289,71 +292,71 @@ var show_chart = function(time_period){
 		        type: 'line',
 		        name: 'MA10',
 		        data: ma10,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    },{
 		        type: 'line',
 		        name: 'MA20',
 		        data: ma20,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    },{
 		        type: 'line',
 		        name: 'MA30',
 		        data: ma30,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'column',
 		        name: 'MACD',
 		        data: macd,
 		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'line',
 		        name: 'DEA',
 		        data: dea,
 		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'line',
 		        name: 'DIF',
 		        data: dif,
 		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'line',
 		        name: 'K',
 		        data: k,
 		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'line',
 		        name: 'D',
 		        data: d,
 		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }, {
 		        type: 'line',
 		        name: 'J',
 		        data: j,
 		        yAxis: 2,
-		        dataGrouping: {
-					units: groupingUnits
-		        }
+		      //dataGrouping: {
+				//units: groupingUnits
+	        //}
 		    }]
 		});
 		
@@ -389,7 +392,11 @@ $(function() {
         
         while (i--) {
             var candlePoint = chart.series[0].points[i];
-            var color = (candlePoint.open < candlePoint.close) ? '#FF0000' : '#008000';
+            var color = '#FF0000';
+            if (!_.isUndefined(candlePoint)){
+            	color = (candlePoint.open < candlePoint.close) ? '#FF0000' : '#008000';
+            } 
+            //var color = (candlePoint.open < candlePoint.close) ? '#FF0000' : '#008000';
             var seriesPointAttr = merge(series.pointAttr);
             
             seriesPointAttr[''].fill = color;

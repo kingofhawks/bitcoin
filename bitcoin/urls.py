@@ -27,6 +27,8 @@ urlpatterns = patterns('',
     url(r'^market_form/$', views.market_form),
     url(r'^create_ticker/$', views.create_ticker),
     url(r'^polling_mgtox/$', views.polling_mgtox),
+    url(r'^highstock/$', views.highstock),
+    url(r'^sample_json/$', views.sample_json),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -20,6 +20,8 @@ from api.dao import get_markets,save_account,get_account,get_account_by_email,up
 from api.models import Account,Ticker
 from api.tasks import get_query_parameters
 #import json
+import logging
+logger = logging.getLogger(__name__)
     
 def test(request):
     return render_to_response('bitcoin1.html', locals())
@@ -137,6 +139,16 @@ def market(request,name):
 def bitcoin(request):
     return render_to_response('bitcoin.html', locals())
 
+def highstock(request):
+    return render_to_response('highstock.html', locals())
+
+def sample_json(request):
+    url = 'http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-ohlcv.json&callback=?'
+    from api.utils import get_json
+    params = get_query_parameters(url)
+    js = get_json(url,params)
+    return HttpResponse(json.dumps(js), mimetype="application/json")
+
 def dropdown(request):
     #Test code
     init_ticker_table()
@@ -193,11 +205,11 @@ def markets(request):
 
 def ohlc(request):    
     #load from JSON data
-    print 'ohlc******************'
+    logger.debug('************ohlc******************')
     period = request.GET.get('period')
-    print period;
+    #print period;
     market = request.GET.get('market')
-    print market;
+    #print market;
     
     if period is None:
         period = '15Min'
@@ -207,7 +219,7 @@ def ohlc(request):
     
     #TODO
     ticker = get_market_by_name(market)
-    print ticker
+    #print ticker
     #data = get_trades('https://796.com/apiV2/trade/100.html',params)
     url = ticker[0].trade
     params = get_query_parameters(url)
@@ -218,16 +230,20 @@ def ohlc(request):
     
     #data = poll_history('https://data.mtgox.com/api/1/BTCusd/trades?since=1316354111564378')
     from api.dao import get_trades_by_market
+    logger.debug('************begin load ohlc data******************')
     data = get_trades_by_market(market)
-    print data
+    #print data
     
 
     #data = [{u'price': u'129.13', u'type': u'sell', u'amount': u'40', u'time': 1378343428}, {u'price': u'129.11', u'type': u'sell', u'amount': u'9', u'time': 1378343368}, {u'price': u'129.11', u'type': u'buy', u'amount': u'7.88', u'time': 1378343347}, {u'price': u'129.11', u'type': u'sell', u'amount': u'69.22', u'time': 1378343342}, {u'price': u'129.11', u'type': u'sell', u'amount': u'18.84', u'time': 1378343340}, {u'price': u'129.11', u'type': u'sell', u'amount': u'82', u'time': 1378343293}, {u'price': u'129.13', u'type': u'buy', u'amount': u'6.38', u'time': 1378343240}, {u'price': u'129.13', u'type': u'sell', u'amount': u'8', u'time': 1378343228}, {u'price': u'130.00', u'type': u'buy', u'amount': u'8.92', u'time': 1378343211}, {u'price': u'129.15', u'type': u'buy', u'amount': u'7.08', u'time': 1378343211}, {u'price': u'129.15', u'type': u'sell', u'amount': u'9.92', u'time': 1378343210}, {u'price': u'129.15', u'type': u'buy', u'amount': u'9.92', u'time': 1378343178}, {u'price': u'129.11', u'type': u'sell', u'amount': u'4', u'time': 1378343145}, {u'price': u'129.15', u'type': u'sell', u'amount': u'38.9', u'time': 1378343132}, {u'price': u'129.10', u'type': u'sell', u'amount': u'4', u'time': 1378343107}, {u'price': u'129.11', u'type': u'sell', u'amount': u'4', u'time': 1378343045}, {u'price': u'129.02', u'type': u'sell', u'amount': u'56', u'time': 1378342988}, {u'price': u'129.10', u'type': u'sell', u'amount': u'12', u'time': 1378342988}, {u'price': u'129.30', u'type': u'sell', u'amount': u'20', u'time': 1378342988}, {u'price': u'129.10', u'type': u'sell', u'amount': u'8', u'time': 1378342986}, {u'price': u'130.00', u'type': u'buy', u'amount': u'8', u'time': 1378342967}, {u'price': u'130.00', u'type': u'sell', u'amount': u'105.84', u'time': 1378342908}, {u'price': u'130.01', u'type': u'sell', u'amount': u'81.8', u'time': 1378342908}, {u'price': u'130.05', u'type': u'sell', u'amount': u'5.14', u'time': 1378342908}, {u'price': u'130.50', u'type': u'sell', u'amount': u'7.22', u'time': 1378342908}, {u'price': u'130.05', u'type': u'sell', u'amount': u'34.86', u'time': 1378342888}, {u'price': u'130.00', u'type': u'sell', u'amount': u'112', u'time': 1378342883}, {u'price': u'130.00', u'type': u'sell', u'amount': u'60', u'time': 1378342868}, {u'price': u'130.00', u'type': u'sell', u'amount': u'80', u'time': 1378342858}, {u'price': u'130.00', u'type': u'sell', u'amount': u'40', u'time': 1378342852}, {u'price': u'130.00', u'type': u'sell', u'amount': u'8', u'time': 1378342771}, {u'price': u'130.00', u'type': u'sell', u'amount': u'28', u'time': 1378342768}, {u'price': u'130.00', u'type': u'buy', u'amount': u'3.44', u'time': 1378342762}, {u'price': u'130.00', u'type': u'buy', u'amount': u'372.78', u'time': 1378342758}, {u'price': u'130.00', u'type': u'buy', u'amount': u'40', u'time': 1378342752}, {u'price': u'130.00', u'type': u'sell', u'amount': u'577.78', u'time': 1378342748}, {u'price': u'130.00', u'type': u'sell', u'amount': u'1000', u'time': 1378342745}, {u'price': u'130.00', u'type': u'sell', u'amount': u'104', u'time': 1378342744}, {u'price': u'130.00', u'type': u'sell', u'amount': u'291', u'time': 1378342740}, {u'price': u'130.00', u'type': u'sell', u'amount': u'717.3', u'time': 1378342732}, {u'price': u'130.01', u'type': u'sell', u'amount': u'170', u'time': 1378342732}, {u'price': u'130.02', u'type': u'sell', u'amount': u'490', u'time': 1378342732}, {u'price': u'130.08', u'type': u'sell', u'amount': u'86.2', u'time': 1378342732}, {u'price': u'130.08', u'type': u'sell', u'amount': u'14', u'time': 1378342722}, {u'price': u'130.08', u'type': u'sell', u'amount': u'40', u'time': 1378342716}, {u'price': u'130.08', u'type': u'sell', u'amount': u'61.8', u'time': 1378342711}, {u'price': u'130.09', u'type': u'sell', u'amount': u'20.04', u'time': 1378342711}, {u'price': u'130.10', u'type': u'sell', u'amount': u'3.2', u'time': 1378342711}, {u'price': u'130.20', u'type': u'sell', u'amount': u'3.4', u'time': 1378342711}, {u'price': u'130.25', u'type': u'sell', u'amount': u'26', u'time': 1378342694}, {u'price': u'130.50', u'type': u'sell', u'amount': u'3.56', u'time': 1378342685}, {u'price': u'130.50', u'type': u'sell', u'amount': u'120', u'time': 1378342680}, {u'price': u'130.50', u'type': u'sell', u'amount': u'20', u'time': 1378342673}, {u'price': u'130.50', u'type': u'sell', u'amount': u'30.38', u'time': 1378342663}, {u'price': u'130.50', u'type': u'sell', u'amount': u'18.06', u'time': 1378342654}, {u'price': u'131.01', u'type': u'sell', u'amount': u'16.24', u'time': 1378342586}, {u'price': u'132.00', u'type': u'sell', u'amount': u'40', u'time': 1378342556}, {u'price': u'132.10', u'type': u'sell', u'amount': u'40', u'time': 1378342556}, {u'price': u'132.20', u'type': u'sell', u'amount': u'40', u'time': 1378342552}, {u'price': u'132.25', u'type': u'sell', u'amount': u'79.26', u'time': 1378342513}, {u'price': u'132.30', u'type': u'sell', u'amount': u'40', u'time': 1378342513}, {u'price': u'132.40', u'type': u'sell', u'amount': u'40', u'time': 1378342513}, {u'price': u'132.50', u'type': u'sell', u'amount': u'290.54', u'time': 1378342513}, {u'price': u'132.50', u'type': u'sell', u'amount': u'166.76', u'time': 1378342507}, {u'price': u'132.60', u'type': u'sell', u'amount': u'40', u'time': 1378342507}, {u'price': u'132.70', u'type': u'sell', u'amount': u'40', u'time': 1378342507}, {u'price': u'132.80', u'type': u'sell', u'amount': u'40', u'time': 1378342507}, {u'price': u'132.90', u'type': u'sell', u'amount': u'40', u'time': 1378342507}, {u'price': u'133.00', u'type': u'sell', u'amount': u'40', u'time': 1378342507}, {u'price': u'133.10', u'type': u'sell', u'amount': u'33.24', u'time': 1378342507}, {u'price': u'133.10', u'type': u'sell', u'amount': u'6.76', u'time': 1378342494}, {u'price': u'133.20', u'type': u'sell', u'amount': u'40', u'time': 1378342494}, {u'price': u'133.30', u'type': u'sell', u'amount': u'40', u'time': 1378342494}, {u'price': u'133.33', u'type': u'sell', u'amount': u'3.24', u'time': 1378342494}, {u'price': u'133.40', u'type': u'sell', u'amount': u'40', u'time': 1378342463}, {u'price': u'133.50', u'type': u'sell', u'amount': u'240', u'time': 1378342463}, {u'price': u'133.51', u'type': u'sell', u'amount': u'120', u'time': 1378342463}, {u'price': u'133.60', u'type': u'sell', u'amount': u'40', u'time': 1378342457}, {u'price': u'133.70', u'type': u'sell', u'amount': u'24', u'time': 1378342420}, {u'price': u'133.70', u'type': u'sell', u'amount': u'16', u'time': 1378342406}, {u'price': u'133.75', u'type': u'sell', u'amount': u'2', u'time': 1378342381}, {u'price': u'133.80', u'type': u'sell', u'amount': u'1.02', u'time': 1378342273}, {u'price': u'133.80', u'type': u'sell', u'amount': u'4', u'time': 1378342266}, {u'price': u'133.80', u'type': u'sell', u'amount': u'100', u'time': 1378342263}, {u'price': u'133.80', u'type': u'sell', u'amount': u'80', u'time': 1378342253}, {u'price': u'133.80', u'type': u'sell', u'amount': u'6.98', u'time': 1378342234}, {u'price': u'133.80', u'type': u'sell', u'amount': u'48', u'time': 1378342226}, {u'price': u'133.90', u'type': u'sell', u'amount': u'40', u'time': 1378342218}, {u'price': u'134.00', u'type': u'sell', u'amount': u'3.1', u'time': 1378342202}, {u'price': u'134.00', u'type': u'sell', u'amount': u'65', u'time': 1378342200}, {u'price': u'134.00', u'type': u'sell', u'amount': u'3.62', u'time': 1378342194}, {u'price': u'134.00', u'type': u'sell', u'amount': u'24', u'time': 1378342193}, {u'price': u'134.00', u'type': u'sell', u'amount': u'1000', u'time': 1378342192}, {u'price': u'134.00', u'type': u'sell', u'amount': u'2', u'time': 1378342189}, {u'price': u'134.00', u'type': u'sell', u'amount': u'8', u'time': 1378342189}, {u'price': u'134.00', u'type': u'sell', u'amount': u'40.48', u'time': 1378342161}, {u'price': u'134.01', u'type': u'sell', u'amount': u'2.98', u'time': 1378342156}, {u'price': u'134.01', u'type': u'sell', u'amount': u'120', u'time': 1378342151}, {u'price': u'134.10', u'type': u'buy', u'amount': u'42', u'time': 1378342126}, {u'price': u'134.10', u'type': u'sell', u'amount': u'5.58', u'time': 1378342125}]
-    print len(data)    
-    d = pd.read_json(get_string_data(data))
+    logger.debug('************ohlc data length******************'+str(len(data)))
+   
+    d = pd.read_json(get_string_data(data[0:670]))
     #print d
     d.time = pd.to_datetime(d.time, unit='s')
     d.set_index('time', inplace=True)
+#    d.index = d.index.tz_localize('Asia/Shanghai').tz_convert('UTC')
+#    d.index.tz = None
     
     volume = d['amount'].resample(period, how='sum') #maybe how should be "sum"?
     #print volume
@@ -241,7 +257,7 @@ def ohlc(request):
     
     #MA indicator
     ma1 = request.GET.get('ma1')
-    print ma1;
+    #print ma1;
     if ma1 is None:
         ma1 = 5
         
@@ -260,10 +276,10 @@ def ohlc(request):
     if ma4 is None:
         ma4 = 30
 
-    result = MA(result,int(ma1),'MA_5')
-    result = MA(result,int(ma2),'MA_10')
-    result = MA(result,int(ma3),'MA_20')
-    result = MA(result,int(ma4),'MA_30')
+#    result = MA(result,int(ma1),'MA_5')
+#    result = MA(result,int(ma2),'MA_10')
+#    result = MA(result,int(ma3),'MA_20')
+#    result = MA(result,int(ma4),'MA_30')
     
     #MACD indicator
     short = request.GET.get('short')
@@ -278,11 +294,11 @@ def ohlc(request):
     #print ma1;
     if mid is None:
         mid = 9
-    result = MACD(result,int(short),int(long2),int(mid))
+#    result = MACD(result,int(short),int(long2),int(mid))
     print '%d*****************',len(result.index)
     
     #KDJ indicator
-    result = KDJ(result,9,3,3)
+#    result = KDJ(result,9,3,3)
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     #print js
@@ -291,8 +307,14 @@ def ohlc(request):
 
 
 def polling_mgtox(request):
-    url = 'https://data.mtgox.com/api/1/BTCusd/trades?since=1316354111564378'
-    from api.history import poll_history
-    poll_history(url)
+    try:
+#        url = 'https://data.mtgox.com/api/1/BTCusd/trades?since=1316354111564378'
+#        from api.history import poll_history
+#        poll_history(url,True)
+        from api.get_mtgox_data import fetch_mtgox
+        fetch_mtgox()
+    except Exception as e:
+        print e
+        logging.error(e)  
     return HttpResponse("OK")
 

@@ -11,7 +11,8 @@
   		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
 		<script type="text/javascript">
 $(function() {		
-		$.getJSON('ohlc.json', function(data) {
+	//$.getJSON('https://raw.github.com/kingofhawks/bitcoin/master/bitcoin/static/ohlc.json', function(data) {	
+	$.getJSON('ohlc.json', function(data) {
 		//console.log(data);
 		var json = JSON.parse(data);
 		console.log(json)

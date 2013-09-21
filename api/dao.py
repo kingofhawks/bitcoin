@@ -5,6 +5,8 @@ Created on 2013-9-7
 '''
 import json
 from api.models import Ticker,Account,Alert,MtgoxTrade,Futures796Trade,Stockpd796Trade
+import logging
+logger = logging.getLogger(__name__)
 
 def init_ticker_table():
     with open('markets.json') as data_file:    
@@ -44,22 +46,37 @@ def update_alerts(username,market,high,low):
     
 def get_trades_by_market(market):
     data = []
-    
+    logger.debug('begin sql*****')
     if (market == 'MTgox'):
-        trades = MtgoxTrade.objects.all()
+        #trades = MtgoxTrade.objects.all()
+        trades = MtgoxTrade.objects.values('time','price','amount','type')
     elif (market == '796futures'):
-        trades = Futures796Trade.objects.all()
+        #trades = Futures796Trade.objects.all()
+        trades = Futures796Trade.objects.values('time','price','amount','type')
     elif (market == '796stockpd'):
-        trades = Stockpd796Trade.objects.all()
+        #trades = Stockpd796Trade.objects.all()
+        trades = Futures796Trade.objects.values('time','price','amount','type')
     
-    for trade in trades:
-            js = dict()
-            js['time']= trade.time
-            js['price']= trade.price
-            js['amount']= trade.amount
-            js['type']= trade.type
-            data.append(js)
-    return data
+    logger.debug('begin for json*****')
+#    for trade in trades:
+#            js = {}
+#            js['time']= trade.time
+#            js['price']= trade.price
+#            js['amount']= trade.amount
+#            js['type']= trade.type
+#            data.append(js)
+            
+#    data = [{'time': trade.time, 'price': trade.price, 'amount': trade.amount, 'type': trade.type}
+#        for trade in trades]
+    logger.debug('end for json*****')
+#    from django.core import serializers
+#
+#    data = serializers.serialize("json", 
+#                             trades, 
+#                             fields=('time','price','amount','type'))
+
+    #return data
+    return trades
 
 def get_last30_trades(market):
     data = []
@@ -83,10 +100,10 @@ def get_last30_trades(market):
         
 if __name__ == "__main__":     
     #init_ticker_table()
-    print get_markets()
-    from urlparse import urlparse, parse_qsl
-    o = urlparse('https://796.com/apiV2/depth/100.html?op=futures')
-    query_dict = dict(parse_qsl(o.query))
+#    print get_markets()
+#    from urlparse import urlparse, parse_qsl
+#    o = urlparse('https://796.com/apiV2/depth/100.html?op=futures')
+#    query_dict = dict(parse_qsl(o.query))
     #d = dict(o.query)
 #    print query_dict
 #    print get_account('a','b')
@@ -94,5 +111,5 @@ if __name__ == "__main__":
 #    print get_alert('simon','test')
 #    update_alerts('simon','test',0,0)
 #    print get_market_by_name('796futures')
-    #print get_trades_by_market('MTgox')
-    print get_last30_trades('MTgox')
+    print get_trades_by_market('MTgox')
+    #print get_last30_trades('MTgox')

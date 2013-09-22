@@ -17,6 +17,8 @@ sudo apt-get install python-matplotlib
 4. Pandas
 apt-get install python-pandas (only 0.7.0)
 sudo pip install --upgrade pandas (will upgrade to 0.12.0)
+5. MySQLDB 
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#mysql-python(Win7)
 
 
 How to run django celery tasks:
@@ -30,3 +32,4 @@ http://www.scipy.org/install.html
 1.IP
 redis
 socket.io server can't set to localhost
+market.html

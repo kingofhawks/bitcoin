@@ -46,10 +46,11 @@ def update_alerts(username,market,high,low):
     
 def get_trades_by_market(market):
     data = []
-    logger.debug('begin sql*****')
+    logger.debug('begin load trades*****')
     if (market == 'MTgox'):
-        #trades = MtgoxTrade.objects.all()
-        trades = MtgoxTrade.objects.values('time','price','amount','type')
+        #trades = MtgoxTrade.objects.all()[:1000000] test only
+        trades = MtgoxTrade.objects.values_list('time','price','amount')
+        #trades = MtgoxTrade.objects.values('time','price','amount','type')
     elif (market == '796futures'):
         #trades = Futures796Trade.objects.all()
         trades = Futures796Trade.objects.values('time','price','amount','type')
@@ -57,8 +58,9 @@ def get_trades_by_market(market):
         #trades = Stockpd796Trade.objects.all()
         trades = Futures796Trade.objects.values('time','price','amount','type')
     
-    logger.debug('begin for json*****')
-#    for trade in trades:
+    logger.debug('finish query for trades*****')
+    #for trade in trades:
+#    for trade in trades.iterator():
 #            js = {}
 #            js['time']= trade.time
 #            js['price']= trade.price
@@ -66,17 +68,26 @@ def get_trades_by_market(market):
 #            js['type']= trade.type
 #            data.append(js)
             
+    for trade in trades.iterator():
+        #print trade
+        js = {}
+        js['time']= trade[0]
+        js['price']= trade[1]
+        js['amount']= trade[2]
+        #js['type']= trade[3]
+        data.append(js)
+            
 #    data = [{'time': trade.time, 'price': trade.price, 'amount': trade.amount, 'type': trade.type}
 #        for trade in trades]
-    logger.debug('end for json*****')
+    logger.debug('end encode json*****')
 #    from django.core import serializers
 #
 #    data = serializers.serialize("json", 
 #                             trades, 
 #                             fields=('time','price','amount','type'))
 
-    #return data
-    return trades
+    return data
+    #return trades
 
 def get_last30_trades(market):
     data = []

@@ -217,6 +217,13 @@ def ohlc(request):
 #        op='futures'
 #    )
     
+    #read from redis cache
+    import redis
+    r = redis.StrictRedis(host='192.168.192.128', port=6379, db=0)
+    key = market+'_'+period
+    cache = r.get(key)
+    if cache is not None:
+        return HttpResponse(cache, mimetype="application/json")
     #TODO
     ticker = get_market_by_name(market)
     #print ticker
@@ -302,8 +309,10 @@ def ohlc(request):
     
     js = result.reset_index().to_json(date_format='iso', orient='records')
     #print js
-    
-    return HttpResponse(json.dumps(js), mimetype="application/json") 
+    jsonData = json.dumps(js)
+    print len(jsonData)
+    r.set(key,jsonData)
+    return HttpResponse(jsonData, mimetype="application/json") 
 
 
 def polling_mgtox(request):

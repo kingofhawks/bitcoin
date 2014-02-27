@@ -4,8 +4,10 @@
 
 .container2 {
   background: #EEE;
-  width: 100%;
+  width: 99.6%;
   margin-bottom: 20px;
+  margin: 0 auto;
+  max-width: 120em;
 }
 
 .item {
@@ -15,7 +17,7 @@
   background: #000000;
 }
 
-.item.w2 { width: 200px; }
+.item.w2 { width: 14.701222%;}
 .item.w3 { width: 180px; }
 .item.w4 { width: 100%; }
 .item.w5 { width: 70%; }

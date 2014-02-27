@@ -88,6 +88,11 @@ if __name__ == '__main__':
     df.TIMESTAMP = pd.to_datetime(df.TIMESTAMP, unit='s')
     df.set_index('TIMESTAMP', inplace=True)
     print df
+    #convert to Local timezone
+    df.index = df.index.tz_localize('Asia/Shanghai').tz_convert('UTC')
+    df.index.tz = None
+    
+    print df
     test = df['VOLUME'].resample('H', how='ohlc')
     print test
     #print df
@@ -110,15 +115,15 @@ if __name__ == '__main__':
     #print d.to_json(orient='records')
     
     print 'price***************'
-    period = '15Min'
+    period = '1Min'
     volume = d['amount'].resample(period, how='sum') #maybe how should be "sum"?
-    print volume
+    print len(volume.index)
     print volume.reset_index().to_json(date_format='iso', orient='records')
-    print type(volume)
+    #print type(volume)
     
     price = d['price'].resample(period, how='ohlc')
     print price
-    print type(price)
+    #print type(price)
     
     #join OHLC and volume
     s = Series(volume,name='amount')
@@ -127,7 +132,7 @@ if __name__ == '__main__':
     
     print '****************OHLC with volume***************'
     js = a.reset_index().to_json(date_format='iso', orient='records')
-    print js
+    #print js
     #price.join(volume)
     #merged = merge(price, volume,on='time')
     #print 'joined***************'
@@ -135,19 +140,19 @@ if __name__ == '__main__':
     
     print 'ma***************'
     ma = MA(price,7,'MA_7')
-    print ma.to_json(date_format='iso', orient='records')
+    #print ma.to_json(date_format='iso', orient='records')
     
     print 'MACD***************'
     macd = MACD(price,12,26,9)
-    print macd.to_json(date_format='iso', orient='records')
+    #print macd.to_json(date_format='iso', orient='records')
     
     print 'KDJ****************'
     kdj = KDJ(price,9,3,3)
-    print kdj.to_json(date_format='iso', orient='records')
+    #print kdj.to_json(date_format='iso', orient='records')
     
     js = price.to_json(date_format='iso', orient='records')
     #print js
     price = d['price'].resample(period, how='ohlc').reset_index()
-    print price
+    #print price
     js = price.to_json(date_format='iso', orient='records')
-    print js
+    #print js

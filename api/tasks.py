@@ -53,7 +53,7 @@ def polling(market):
     publish('trades',live_trades)
     
     #save trades to DB
-    save_trades(name,trades)
+    #save_trades(name,trades)
     
     
 @task()

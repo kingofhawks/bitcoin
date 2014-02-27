@@ -72,7 +72,7 @@ def get_return(url,params):
 def get_trades(url,params):
     if (url.find('mtgox') != -1):
 #        return get_json(url,params)
-        size = 300 #default show 30 trades
+        size = 700 #default show 30 trades
         data =  poll_history(url,False)
         length = len(data)
         if (length >=30):
